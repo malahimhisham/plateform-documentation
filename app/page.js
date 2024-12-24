@@ -3,14 +3,94 @@
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
-import { motion } from "framer-motion"; // Import motion
+import { motion } from "framer-motion";
+import './admin/HowTo/table.modules.css'
 
 export default function Home() {
-  const [token, setToken] = useState('');
+  const [token, setToken] = useState("");
   const [userName, setUserName] = useState(null);
-  const router = useRouter();  // Initialize the router for redirection
+  const [categories, setCategories] = useState([]);
+  const [filteredCategories, setFilteredCategories] = useState([]);
+  const [selectedCategory, setSelectedCategory] = useState(null);
+  const [selectedSubCategory, setSelectedSubCategory] = useState(null);
+  const [subCategories, setSubCategories] = useState([]);
+  const [filteredSubCategories, setFilteredSubCategories] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [subSearchQuery, setSubSearchQuery] = useState("");
+
+  const [sortOption, setSortOption] = useState("default"); // Default sorting
+  const [filteredSections, setFilteredSections] = useState([]);
+
+  const [section, setSection] = useState([])
+  const router = useRouter();
 
   useEffect(() => {
+    function getCookie(name) {
+      const value = `; ${document.cookie}`;
+      const parts = value.split(`; ${name}=`);
+      if (parts.length === 2) return parts.pop().split(";").shift();
+      return null;
+    }
+
+    const authToken = getCookie("authToken");
+    const userName = getCookie("userName");
+
+    if (authToken && userName) {
+      setToken(authToken);
+      setUserName(userName);
+    } else {
+      toast.error("Please login first");
+    }
+  }, [router]);
+
+  useEffect(() => {
+    const fetchCategories = async () => {
+      if (!token) return;
+      setLoading(true);
+      try {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND}/pcategory1/all`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        const data = await response.json();
+        if (data.success) {
+          setCategories(data.categories);
+          setFilteredCategories(data.categories);
+          setSelectedCategory(data.categories[0]);
+
+        } else {
+          setCategories([]);
+          setFilteredCategories([]);
+          setSection([])
+          setFilteredSections([])
+        }
+      } catch (error) {
+        console.log("Network error:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchCategories();
+  }, [token]);
+
+  useEffect(() => {
+    if (selectedCategory && selectedCategory.hasSubCategory) {
+      fetchSubCategories();
+
+    } else if (selectedCategory && (selectedCategory.hasSubCategory == false)) {
+      fetchSessions(selectedCategory._id)
+    }
+  }, [selectedCategory]);
+  useEffect(() => {
+    if (selectedSubCategory) {
+      fetchSubSessions(selectedSubCategory._id);
+    }
+  }, [selectedSubCategory]);
+
+  const fetchSubSessions = async (id) => {
     function getCookie(name) {
       const value = `; ${document.cookie}`;
       const parts = value.split(`; ${name}=`);
@@ -18,76 +98,282 @@ export default function Home() {
       return null;
     }
 
-    const authToken = getCookie('authToken');
-    const userName = getCookie('userName');
+    const token = getCookie('authToken');
+    setLoading(true)
+    try {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND}/psubcategorysession1/search/${id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      const data = await response.json();
+      if (data.success) {
 
-    if (authToken && userName) {
-      // Cookies exist, so they are not expired
-      setToken(authToken);
-      setUserName(userName);
-      console.log('Cookies are valid');
-    } else {
-      toast.error("Please login first");
-
-      // Redirect to the home page
-      // window.open("http://localhost:3000/", "_blank");
-      // console.log('Cookies have expired or not set');
+        setSection(data.sessions);
+        setFilteredSections(data.sections);
+        console.log("data.subsessions", data.sessions)
+      } else {
+        setSection([])
+        setFilteredSections([])
+      }
+    } catch (error) {
+      console.log("Network error:", error);
+    } finally {
+      setLoading(false)
     }
-  }, [router]);
+  };
+
+  const fetchSessions = async (id) => {
+    function getCookie(name) {
+      const value = `; ${document.cookie}`;
+      const parts = value.split(`; ${name}=`);
+      if (parts.length === 2) return parts.pop().split(';').shift();
+      return null;
+    }
+
+    const token = getCookie('authToken');
+    setLoading(true)
+    try {
+      // console.log("selectedCourse._id", category._id)
+      const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND}/pcategorysession1/search/${id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      const data = await response.json();
+      if (data.success) {
+        setSection(data.sessions);
+        console.log("data.sessions", data.sessions)
+        setFilteredSections(data.sections);
+      } else {
+        setSection([])
+        setFilteredSections([]);
+      }
+    } catch (error) {
+      console.log("Network error:", error);
+    } finally {
+      setLoading(false)
+    }
+  };
+
+  useEffect(() => {
+    const sortedSections = [...section];
+    if (sortOption === "sortA-Z") {
+      sortedSections.sort((a, b) => a.desc.localeCompare(b.desc)); // Sort A-Z by `desc`
+    } else if (sortOption === "sortLastUpdated") {
+      sortedSections.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)); // Sort by `lastUpdated`
+    } else if (sortOption === "sortByPopularity") {
+      sortedSections.sort((a, b) => b.popularity - a.popularity); // Sort by popularity (higher values first)
+    }
+    setFilteredSections(sortedSections);
+  }, [sortOption, section]);
+
+  const fetchSubCategories = async () => {
+    setLoading(true);
+    try {
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_BACKEND}/psubcategory1/all?categoryAssign=${selectedCategory._id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      const data = await response.json();
+      if (data.success) {
+        setSubCategories(data.pSubCategory1s);
+        setSelectedSubCategory(data.pSubCategory1s[0])
+        setFilteredSubCategories(data.pSubCategory1s);
+      } else {
+        setSubCategories([]);
+        setSection([])
+        setFilteredSections([])
+      }
+    } catch (error) {
+      console.log("Network error:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleCategorySearch = (e) => {
+    setSearchQuery(e.target.value);
+    const filtered = categories.filter((category) =>
+      category.name.toLowerCase().includes(e.target.value.toLowerCase())
+    );
+    setFilteredCategories(filtered);
+  };
+
+  const handleSubCategorySearch = (e) => {
+    setSubSearchQuery(e.target.value);
+    const filtered = subCategories.filter((subCategory) =>
+      subCategory.name.toLowerCase().includes(e.target.value.toLowerCase())
+    );
+    setFilteredSubCategories(filtered);
+  };
 
   return (
     <>
       {/* Header */}
-      <motion.div 
-        className="flex justify-between w-full px-8 mt-6"
-        initial={{ opacity: 0 }} 
-        animate={{ opacity: 1 }} 
+      <motion.div
+        className="flex justify-between w-full px-6 md:px-8 mt-6"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
         transition={{ duration: 0.5 }}
       >
-        <h2 className="font-bold text-sm lg:text-2xl">Platform Documentation</h2>
-        <p className="text-xs lg:text-sm text-gray-500 mt-2 md:mt-0">Platform Documentation / Platform</p>
+        <h2 className="font-bold text-sm sm:text-base md:text-lg lg:text-2xl">
+          Platform Documentation
+        </h2>
+        <p className="text-xs sm:text-sm md:text-base text-gray-500 mt-2 md:mt-0">
+          Platform Documentation / {selectedCategory?.name || "Platform"} / {selectedSubCategory?.name || "no sub category selected"}
+        </p>
       </motion.div>
+
 
       {/* Main Content with animation */}
       <motion.div
-        className="flex flex-col lg:flex-row min-h-[680px] px-4 lg:px-8"
-        initial={{ opacity: 0, x: -100 }} 
-        animate={{ opacity: 1, x: 0 }} 
+        className="flex flex-col lg:flex-row flex-wrap-reverse lg:flex-nowrap min-h-[680px] px-4 lg:px-8"
+        initial={{ opacity: 0, x: -100 }}
+        animate={{ opacity: 1, x: 0 }}
         transition={{ duration: 0.7 }}
       >
-        {/* Left Sidebar */}
-        <motion.div 
-          className="lg:w-1/5 bg-white p-4 my-8 lg:mr-5 shadow-xl order-1 lg:order-1"
-          initial={{ opacity: 0, x: -100 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.5 }}
-        >
-          <h2 className="font-bold">Left Sidebar</h2>
-          {/* Add your sidebar content here */}
-        </motion.div>
-
         {/* Right Sidebar */}
-        <motion.div 
-          className="lg:w-1/5 bg-white p-4 lg:ml-5 my-8 shadow-xl order-2 lg:order-3"
+        {selectedCategory && selectedCategory.hasSubCategory && <motion.div
+          className="lg:w-1/5 bg-white p-4 lg:ml-5 my-8 shadow-xl order-1 lg:order-3"
           initial={{ opacity: 0, x: 100 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.5 }}
         >
-          <h2 className="font-bold">Right Sidebar</h2>
-          {/* Add your sidebar content here */}
-        </motion.div>
+          
+          <h2 className="font-bold mb-4">Subcategories</h2>
+          <input
+            type="text"
+            placeholder="Search subcategories..."
+            value={subSearchQuery}
+            onChange={handleSubCategorySearch}
+            className="w-full p-2 mb-4 border rounded-md focus:outline-none focus:ring focus:ring-primary"
+          />
+          {loading ? (
+            <p>Loading...</p>
+          ) : filteredSubCategories.length > 0 ? (
+            <ul>
+              {filteredSubCategories.map((subCategory) => (
+                <li key={subCategory._id}
+                  onClick={() => setSelectedSubCategory(subCategory)}
+                  className={`cursor-pointer hover:underline p-2 ${selectedSubCategory?._id === subCategory._id
+                    ? "font-bold text-primary"
+                    : "text-gray-700"
+                    }`}
+                >
+                  {subCategory.name}
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p>No subcategories found</p>
+          )}
+        </motion.div>}
 
         {/* Main Content */}
-        <motion.div 
-          className="flex-1 bg-white p-4 my-8 shadow-xl order-3 lg:order-2"
-          initial={{ opacity: 0, y: 50 }} 
-          animate={{ opacity: 1, y: 0 }} 
+        <motion.div
+          className="flex-1 bg-white p-4 lg:p-14 my-8 shadow-xl order-2 lg:order-2 relative" // Adjusted padding for responsiveness
+          initial={{ opacity: 0, y: 50 }}
+          animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
         >
-          <h1>Main Content</h1>
-          {/* Add your main content here */}
+          {/* Dropdown Filter */}
+          <div className="absolute top-4 right-4 bg-white p-2 rounded-md shadow-md">
+            <select
+              className="w-full p-2 border rounded-md bg-primary text-white focus:outline-none focus:ring-2 focus:ring-primary"
+              value={sortOption}
+              onChange={(e) => setSortOption(e.target.value)}
+            >
+              <option value="default" className="bg-primary text-white">Default</option>
+              <option value="sortA-Z" className="bg-primary text-white">Sort A-Z</option>
+              <option value="sortLastUpdated" className="bg-primary text-white">Sort by Last Updated</option>
+              <option value="sortByPopularity">Sort by Popularity</option>
+            </select>
+          </div>
+
+          {loading ? (
+            <p>Loading...</p>
+          ) : filteredSections && filteredSections.length > 0 ? (
+            filteredSections.map((section) => (
+              <div key={section._id} className="mb-4">
+                {/* Display section description */}
+                {section.desc && <p className="font-bold mt-14 prose text-lg lg:text-xl mx-4 md:mx-8" dangerouslySetInnerHTML={{ __html: section.desc }} />} {/* Added responsive margins */}
+
+                {/* Display video if available */}
+                {section.video && (
+                  <div className="mt-12 flex justify-center mx-4 md:mx-8"> {/* Added responsive margins */}
+                    <video controls className="max-w-[90%] h-auto">
+                      <source src={section.video} type="video/mp4" />
+                      Your browser does not support the video tag.
+                    </video>
+                  </div>
+                )}
+
+                {/* Display image if available */}
+                {section.image && (
+                  <div className="mt-12 flex justify-center mx-4 md:mx-8"> {/* Added responsive margins */}
+                    <img src={section.image} alt="Section" className="max-w-[90%] h-auto rounded-sm" />
+                  </div>
+                )}
+
+                {/* Display audio if available */}
+                {section.audio && (
+                  <div className="mt-12 mx-4 md:mx-8"> {/* Added responsive margins */}
+                    <audio controls className="w-full">
+                      <source src={section.audio} type="audio/mp3" />
+                      Your browser does not support the audio element.
+                    </audio>
+                  </div>
+                )}
+              </div>
+            ))
+          ) : (
+            <p>No Section found</p>
+          )}
+        </motion.div>
+
+        {/* Left Sidebar */}
+        <motion.div
+          className="lg:w-1/5 bg-white p-4 my-8 lg:mr-5 shadow-xl order-3 lg:order-1"
+          initial={{ opacity: 0, x: -100 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.5 }}
+        >
+          <h2 className="font-bold mb-4">Categories</h2>
+          <input
+            type="text"
+            placeholder="Search categories..."
+            value={searchQuery}
+            onChange={handleCategorySearch}
+            className="w-full p-2 mb-4 border rounded-md focus:outline-none focus:ring focus:ring-primary"
+          />
+          {loading ? (
+            <p>Loading...</p>
+          ) : filteredCategories.length > 0 ? (
+            <ul>
+              {filteredCategories.map((category) => (
+                <li
+                  key={category._id}
+                  onClick={() => setSelectedCategory(category)}
+                  className={`cursor-pointer p-2 ${selectedCategory?._id === category._id
+                    ? "font-bold text-primary"
+                    : "text-gray-700"
+                    }`}
+                >
+                  {category.name}
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p>No categories found</p>
+          )}
         </motion.div>
       </motion.div>
+
     </>
   );
 }

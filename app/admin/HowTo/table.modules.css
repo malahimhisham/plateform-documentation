@@ -1,0 +1,44 @@
+.prose table {
+    border-collapse: collapse;
+    width: 100%;
+}
+
+.prose table, .prose th, .prose td {
+    border: 2px solid #4B5563; /* Darker gray border for boldness */
+}
+.prose th, .prose td {
+    padding: 1rem; /* Added padding for better readability */
+    text-align: left;
+}
+
+.prose ul {
+    list-style-type: disc;
+    margin-left: 20px;
+    padding-left: 10px;
+}
+.prose ul li {
+    margin-bottom: 8px;
+}
+
+
+.prose1 table {
+    border-collapse: collapse;
+    width: 80%;
+}
+
+.prose1 table, .prose1 th, .prose1 td {
+    border: 2px solid #4B5563; /* Darker gray border for boldness */
+}
+.prose1 th, .prose1 td {
+    padding: 1rem; /* Added padding for better readability */
+    text-align: left;
+}
+
+.prose1 ul {
+    list-style-type: disc;
+    margin-left: 20px;
+    padding-left: 10px;
+}
+.prose1 ul li {
+    margin-bottom: 8px;
+}

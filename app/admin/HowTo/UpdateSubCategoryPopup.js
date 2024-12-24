@@ -4,8 +4,8 @@ import toast from 'react-hot-toast';
 
 const UpdateSubCategoryPopup = ({subCategory, setUpdateSubCategory}) => {
     const [name, setName] = useState(subCategory?.name || "");
-    const [isLoading, setIsLoading] = useState(false); // Track loading state
-
+    const [isLoading, setIsLoading] = useState(false); 
+      
     const handleUpdateSubCategory = async () => {
         try {
             setIsLoading(true); // Start loading state
@@ -50,8 +50,10 @@ const UpdateSubCategoryPopup = ({subCategory, setUpdateSubCategory}) => {
         <div className="fixed inset-0 flex items-center justify-center z-50 bg-purple-300 bg-opacity-50">
             <div className="bg-white p-6 rounded-lg shadow-lg w-80 sm:w-[40vw] md:w-[50vw] lg:w-[60vw]">
                 <h3 className="text-lg font-bold mb-4">
-                    Update Category: {subCategory?.name || "Unknown"}
+                    Update Category
                 </h3>
+
+                
 
                 <div className="mb-4">
                     <label htmlFor="name" className="block text-sm font-semibold mb-1">

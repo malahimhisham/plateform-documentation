@@ -5,6 +5,7 @@ import AddCategoryPopup from "./AddCategoryPopup";
 import DeleteCategoryPopup from "./DeleteCategoryPopup";
 import UpdateCategoryPopup from "./UpdateCategory";
 import SubCategory from "./SubCategory";
+import CategorySession from "./CategorySession";
 
 const HowTo = () => {
   const [isAddCategory, setIsAddCategory] = useState(false);
@@ -25,8 +26,8 @@ const HowTo = () => {
   const [categoryToUpdate, setCategoryToUpdate] = useState(null);
 
   //SubCategory 
-  const [isSubCategory , setIsSubCategory] = useState(false)
-  const [category , setCategory] = useState(null)
+  const [isSubCategory, setIsSubCategory] = useState(false)
+  const [category, setCategory] = useState(null)
 
   // Fetch Categories from API
   const fetchCategories = async () => {
@@ -61,7 +62,7 @@ const HowTo = () => {
 
   useEffect(() => {
     fetchCategories();
-  }, [isAddCategory, isCategoryModelOpen, updateCategory , isSubCategory]);
+  }, [isAddCategory, isCategoryModelOpen, updateCategory, isSubCategory]);
 
   // Filter Categories
   const filterCategories = () => {
@@ -108,7 +109,7 @@ const HowTo = () => {
         key={category._id}
         className="p-4 border rounded-lg shadow-md mb-4 transition-transform transform hover:scale-105 hover:shadow-lg cursor-pointer relative"
       >
-        <div onClick={()=> {setCategory(category) ; setIsSubCategory(true)}}>
+        <div onClick={() => { setCategory(category); setIsSubCategory(true) }}>
           <h3 className="text-lg font-bold text-primary">{category.name}</h3>
           <p className="text-gray-700 mt-2">
             <span className="font-bold">Has Subcategory:</span>{" "}
@@ -147,7 +148,7 @@ const HowTo = () => {
       {!isSubCategory ? (
         <div className="lg:mt-auto mt-12">
           <h2 className="text-2xl font-bold mb-6 text-primary">How To</h2>
-  
+
           {/* Filter Section */}
           <div className="bg-primary p-4 rounded-md shadow-md mb-6">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -159,7 +160,7 @@ const HowTo = () => {
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
               <select
-                className="px-4 py-2 rounded-md text-primary"
+                className="px-4 py-2 accent-primary rounded-md text-primary"
                 value={selectedSubCategory}
                 onChange={(e) => setSelectedSubCategory(e.target.value)}
               >
@@ -175,7 +176,7 @@ const HowTo = () => {
               </button>
             </div>
           </div>
-  
+
           {/* Buttons Section */}
           <div className="mb-4">
             <button
@@ -185,7 +186,7 @@ const HowTo = () => {
               Add Category
             </button>
           </div>
-  
+
           {/* Loading Spinner */}
           {loading ? (
             <div className="flex justify-center items-center py-8">
@@ -199,7 +200,7 @@ const HowTo = () => {
               </div>
             </div>
           )}
-  
+
           {/* Popups */}
           {isAddCategory && <AddCategoryPopup setIsAddCategory={setIsAddCategory} />}
           {isCategoryModelOpen && categoryToDelete && (
@@ -209,7 +210,7 @@ const HowTo = () => {
               setCategoryToDelete={setCategoryToDelete}
             />
           )}
-  
+
           {updateCategory && categoryToUpdate && (
             <UpdateCategoryPopup
               setUpdateCategory={setUpdateCategory}
@@ -219,7 +220,10 @@ const HowTo = () => {
           )}
         </div>
       ) : (
-        <SubCategory setIsSubCategory={setIsSubCategory} category={category}/>
+        <>
+          {(category && category.hasSubCategory === true) && <SubCategory setIsSubCategory={setIsSubCategory} category={category} />}
+          {(category && category.hasSubCategory === false) && <CategorySession setIsSubCategory={setIsSubCategory} category={category} />}
+        </>
       )}
     </>
   );

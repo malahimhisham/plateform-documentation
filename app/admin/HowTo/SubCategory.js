@@ -4,6 +4,7 @@ import { FiEdit, FiTrash } from "react-icons/fi";
 import AddSubCategoryPopup from "./AddSubCategoryPopup";
 import UpdateSubCategoryPopup from "./UpdateSubCategoryPopup";
 import DeleteSubCategoryPopup from "./DeleteSubCategoryPopup";
+import SubCategorySession from "./SubCategorySession";
 // import DeleteSubCategoryPopup from "./DeleteSubCategoryPopup";
 // import UpdateSubCategoryPopup from "./UpdateSubCategoryPopup";
 
@@ -24,6 +25,9 @@ const SubCategory = ({ category, setIsSubCategory }) => {
     // Update SubCategory
     const [updateSubCategory, setUpdateSubCategory] = useState(false);
     const [subCategoryToUpdate, setSubCategoryToUpdate] = useState(null);
+
+    const [isSessionOpen , setIsSessionOpen] = useState(false)
+    const [subCategory , setSubCategory] = useState(null)
 
     // Fetch SubCategories from API
     const fetchSubCategories = async () => {
@@ -55,6 +59,8 @@ const SubCategory = ({ category, setIsSubCategory }) => {
             setLoading(false); // End loading spinner
         }
     };
+
+    
 
     useEffect(() => {
         fetchSubCategories();
@@ -100,12 +106,13 @@ const SubCategory = ({ category, setIsSubCategory }) => {
                 key={subCategory._id}
                 className="p-4 border rounded-lg shadow-md mb-4 transition-transform transform hover:scale-105 hover:shadow-lg cursor-pointer relative"
             >
+                <div onClick={()=> {setIsSessionOpen(true); setSubCategory(subCategory)}}>
                 <h3 className="text-lg font-bold text-primary">{subCategory.name}</h3>
                 <p className="text-gray-700 mt-2">
                     <span className="font-bold">Category: </span>
                     {subCategory.categoryAssign.name}
                 </p>
-
+               </div>
                 <div className="absolute top-2 right-2 flex space-x-2">
                     <button
                         className="text-purple-600 hover:text-purple-800"
@@ -131,6 +138,9 @@ const SubCategory = ({ category, setIsSubCategory }) => {
     };
 
     return (
+
+        <>
+        {!isSessionOpen ? (
         <div className="lg:mt-auto mt-12">
 
             <nav className="mb-6" aria-label="Breadcrumb">
@@ -209,6 +219,12 @@ const SubCategory = ({ category, setIsSubCategory }) => {
                 />
             )}
         </div>
+
+        ) : (
+          <SubCategorySession category={category} setIsSubCategory={setIsSubCategory} subCategory={subCategory}  setIsSessionOpen={setIsSessionOpen} />
+        )}
+
+        </>
     );
 };
 

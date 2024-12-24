@@ -1,9 +1,11 @@
 import React, { useState } from "react";
 import toast from "react-hot-toast";
 
-const AddSubCategoryPopup = ({ setIsAddSubCategory , category }) => {
+const AddSubCategoryPopup = ({ setIsAddSubCategory, category }) => {
   const [name, setName] = useState("");
-  const [isLoading, setIsLoading] = useState(false); // Loading state
+  const [isLoading, setIsLoading] = useState(false);
+
+
 
   // Function to get auth token from cookies
   const getCookie = (name) => {
@@ -30,14 +32,14 @@ const AddSubCategoryPopup = ({ setIsAddSubCategory , category }) => {
           Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ name, categoryAssign:category._id }),
+        body: JSON.stringify({ name, categoryAssign: category._id }),
       });
 
       const data = await response.json();
 
       if (data.success) {
         toast.success("SubCategory added successfully");
-        setIsAddSubCategory(false); 
+        setIsAddSubCategory(false);
       } else {
         toast.error(data.message || "Failed to add SubCategory");
       }
@@ -53,6 +55,8 @@ const AddSubCategoryPopup = ({ setIsAddSubCategory , category }) => {
       <div className="bg-white p-6 rounded-lg shadow-lg w-80 sm:w-[40vw] md:w-[50vw] lg:w-[60vw]">
         <h3 className="text-lg font-bold mb-4">Add SubCategory</h3>
 
+       
+
         <div className="mb-4">
           <label htmlFor="subCategoryName" className="block text-sm font-semibold mb-1">
             SubCategory Name
@@ -67,7 +71,7 @@ const AddSubCategoryPopup = ({ setIsAddSubCategory , category }) => {
           />
         </div>
 
-        
+
         <div className="flex justify-end space-x-2 mt-4">
           <button
             onClick={handleSubmit}
