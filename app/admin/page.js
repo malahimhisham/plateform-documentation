@@ -43,7 +43,7 @@ const Page = () => {
         <div
           className={`fixed top-0 left-0 h-full bg-primary shadow-md text-white w-64 transform ${isOpen ? 'translate-x-0' : '-translate-x-full'} transition-transform duration-300 ease-in-out md:translate-x-0 z-20`}
         >
-          <div className="p-4 text-lg ml-2clg:ml-auto font-semibold border-b border-gray-700">Terapage Plateform Documentation Admin Panel</div>
+          <div className="p-4 text-lg ml-2clg:ml-auto font-semibold border-b border-gray-700">Terapage Platform Documentation Admin Panel</div>
           <ul className="mt-4 space-y-2">
             <li
               className={`px-4 py-2 cursor-pointer transition duration-300 ease-in-out flex items-center rounded-md ${isHowTo ? 'bg-[#2c234d] text-white font-semibold' : 'bg-transparent text-white'} hover:bg-[#2c234d] hover:text-white`}
@@ -74,7 +74,7 @@ const Page = () => {
           <div>
             <Link href={'/'}>
               <button className="absolute top-4 right-2 bg-primary text-white px-4 py-2 rounded-lg shadow-md">
-                Go to Plateform Documentation
+                Go to Platform Documentation
               </button>
             </Link>
           </div>
