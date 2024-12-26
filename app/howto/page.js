@@ -271,7 +271,7 @@ export default function Home() {
             videoElement.removeAttribute('controls');
             videoElement.removeAttribute('autoplay');
             videoElement.removeAttribute('crossorigin');
-            videoElement.removeAttribute('class');
+            // videoElement.removeAttribute('class');
         });
 
         // If no screenshots were captured, return early
@@ -283,12 +283,12 @@ export default function Home() {
         // Create a temporary element to print the specific content (including the screenshots)
         const contentToPrint = document.getElementById('content-to-print').innerHTML;
         const newWindow = window.open('', '_blank');
-        newWindow.document.write('<html><head><title>Print</title><style>body { font-family: Arial, sans-serif; } img { max-width: 100%; } </style></head><body>');
+        newWindow.document.write('<html><head><title>Print</title><style>body { font-family: Arial, sans-serif; } img { max-width: 100% ;  margin-top: 10px; } video { max-width: 100% ; margin-top: 10px; } audio { max-width: 100% ;  margin-top: 10px; } </style></head><body>');
 
         // Replace video tags with the corresponding screenshot for each video
         let updatedContent = contentToPrint;
         screenshots.forEach((screenshotDataUrl) => {
-            updatedContent = updatedContent.replace('<video', `<img src="${screenshotDataUrl}" alt="Video Screenshot" />`);
+            updatedContent = updatedContent.replace('<video>', `<img src="${screenshotDataUrl}" alt="Video Screenshot" />`);
         });
 
         newWindow.document.write(updatedContent);
