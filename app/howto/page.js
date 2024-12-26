@@ -522,7 +522,7 @@ export default function Home() {
                             {filteredCategories.map((category) => (
                                 <li
                                     key={category._id}
-                                    onClick={() => setSelectedCategory(category)}
+                                    onClick={() => {setSelectedCategory(category); setSelectedSubCategory(null)}}
                                     className={`cursor-pointer p-2 ${selectedCategory?._id === category._id
                                         ? "font-bold text-primary"
                                         : "text-gray-700"
