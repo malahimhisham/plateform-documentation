@@ -32,3 +32,21 @@
       transform: rotate(360deg);
     }
   }
+
+  @media print {
+    /* Hide elements that shouldn't appear in the print version */
+    body * {
+        visibility: hidden;
+    }
+
+    #section-to-print, #section-to-print * {
+        visibility: visible;
+    }
+
+    #section-to-print {
+        position: absolute;
+        left: 0;
+        top: 0;
+    }
+}
+

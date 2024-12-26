@@ -1,9 +1,10 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import toast from "react-hot-toast";
 import { motion } from "framer-motion";
+import { FaPrint } from 'react-icons/fa';
 import '../admin/HowTo/table.modules.css'
 
 export default function Home() {
@@ -24,6 +25,8 @@ export default function Home() {
 
     const [section, setSection] = useState([])
     const router = useRouter();
+
+    const sectionRef = useRef();
 
     useEffect(() => {
         function getCookie(name) {
@@ -215,6 +218,94 @@ export default function Home() {
         setFilteredSubCategories(filtered);
     };
 
+
+
+    const captureVideoScreenshot = (videoElement) => {
+        if (!videoElement) {
+            console.error('No video element found.');
+            return null;
+        }
+
+        // Ensure the video is ready to be drawn onto a canvas
+        if (videoElement.readyState >= 3) { // `HAVE_FUTURE_DATA` state (video is ready to be drawn)
+            // Set cross-origin policy
+            videoElement.crossOrigin = 'anonymous';  // Enables cross-origin access
+
+            const canvas = document.createElement('canvas');
+            canvas.width = videoElement.videoWidth;
+            canvas.height = videoElement.videoHeight;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(videoElement, 0, 0, canvas.width, canvas.height);
+
+            try {
+                return canvas.toDataURL(); // returns base64 image URL
+            } catch (e) {
+                console.error('Error capturing screenshot:', e);
+                return null;
+            }
+        } else {
+            console.error('Video is not ready to be drawn.');
+            return null;
+        }
+    };
+
+
+
+    const handlePrint = () => {
+        if (!filteredSections || filteredSections.length === 0) {
+            toast.error("Data is still loading, please wait.");
+            return;
+        }
+
+        // Select all video elements
+        const videoElements = document.querySelectorAll('video');
+        const screenshots = [];
+
+        // Capture screenshots for each video
+        videoElements.forEach((videoElement) => {
+            const screenshotDataUrl = captureVideoScreenshot(videoElement);
+            if (screenshotDataUrl) {
+                screenshots.push(screenshotDataUrl);
+            }
+
+            videoElement.removeAttribute('controls');
+            videoElement.removeAttribute('autoplay');
+            videoElement.removeAttribute('crossorigin');
+            videoElement.removeAttribute('class');
+        });
+
+        // If no screenshots were captured, return early
+        if (screenshots.length === 0) {
+            toast.error("Failed to capture video screenshots.");
+            return;
+        }
+
+        // Create a temporary element to print the specific content (including the screenshots)
+        const contentToPrint = document.getElementById('content-to-print').innerHTML;
+        const newWindow = window.open('', '_blank');
+        newWindow.document.write('<html><head><title>Print</title><style>body { font-family: Arial, sans-serif; } img { max-width: 100%; } </style></head><body>');
+
+        // Replace video tags with the corresponding screenshot for each video
+        let updatedContent = contentToPrint;
+        screenshots.forEach((screenshotDataUrl) => {
+            updatedContent = updatedContent.replace('<video', `<img src="${screenshotDataUrl}" alt="Video Screenshot" />`);
+        });
+
+        newWindow.document.write(updatedContent);
+
+        newWindow.document.write('</body></html>');
+        newWindow.document.close();
+
+        // Ensure everything is loaded before printing
+        setTimeout(() => {
+            newWindow.print();
+        }, 500);  // Delay to ensure everything is loaded
+    };
+
+
+
+
+
     return (
         <>
             {/* Header */}
@@ -233,13 +324,13 @@ export default function Home() {
                     </span>{" "}
                     {selectedCategory && (
                         <>
-                        /{" "}
-                        <span
-                            onClick={() => {setSelectedSubCategory(null); fetchSessions(selectedCategory._id)}}
-                            className="hover:underline cursor-pointer"
-                        >
-                           {selectedCategory?.name || "Platform"}
-                        </span>
+                            /{" "}
+                            <span
+                                onClick={() => { setSelectedSubCategory(null); fetchSessions(selectedCategory._id) }}
+                                className="hover:underline cursor-pointer"
+                            >
+                                {selectedCategory?.name || "Platform"}
+                            </span>
                         </>
                     )}{" "}
                     {selectedSubCategory && (
@@ -296,6 +387,8 @@ export default function Home() {
                     )}
                 </motion.div>}
 
+
+
                 {/* Main Content */}
                 <motion.div
                     className="flex-1 bg-white p-4 lg:p-14 my-8 shadow-xl order-2 lg:order-2 relative" // Adjusted padding for responsiveness
@@ -303,8 +396,15 @@ export default function Home() {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.5 }}
                 >
+                    {/* Print Icon */}
+                    <div className="absolute top-4 left-4">
+                        <FaPrint
+                            onClick={handlePrint}
+                            className="cursor-pointer text-2xl text-gray-600"
+                        />
+                    </div>
                     {/* Dropdown Filter */}
-                    <div className="absolute top-4 right-4 bg-white p-2 rounded-md shadow-md">
+                    <div id="dropdown-filter" className="absolute top-4 right-4 bg-white p-2 rounded-md shadow-md">
                         <select
                             className="w-full p-2 border rounded-md bg-primary text-white focus:outline-none focus:ring-2 focus:ring-primary"
                             value={sortOption}
@@ -317,45 +417,48 @@ export default function Home() {
                         </select>
                     </div>
 
-                    {loading ? (
-                        <p>Loading...</p>
-                    ) : filteredSections && filteredSections.length > 0 ? (
-                        filteredSections.map((section) => (
-                            <div key={section._id} className="mb-4">
-                                {/* Display section description */}
-                                {section.desc && <p className="font-bold mt-14 prose text-lg lg:text-xl mx-4 md:mx-8" dangerouslySetInnerHTML={{ __html: section.desc }} />} {/* Added responsive margins */}
+                    <div id="content-to-print">
 
-                                {/* Display video if available */}
-                                {section.video && (
-                                    <div className="mt-12 flex justify-center mx-4 md:mx-8"> {/* Added responsive margins */}
-                                        <video controls className="max-w-[90%] h-auto">
-                                            <source src={section.video} type="video/mp4" />
-                                            Your browser does not support the video tag.
-                                        </video>
-                                    </div>
-                                )}
 
-                                {/* Display image if available */}
-                                {section.image && (
-                                    <div className="mt-12 flex justify-center mx-4 md:mx-8"> {/* Added responsive margins */}
-                                        <img src={section.image} alt="Section" className="max-w-[90%] h-auto rounded-sm" />
-                                    </div>
-                                )}
+                        {loading ? (
+                            <p>Loading...</p>
+                        ) : filteredSections && filteredSections.length > 0 ? (
+                            filteredSections.map((section) => (
+                                <div key={section._id} className="mb-4">
+                                    {/* Display section description */}
+                                    {section.desc && <p className="font-bold mt-14 prose text-lg lg:text-xl mx-4 md:mx-8" dangerouslySetInnerHTML={{ __html: section.desc }} />} {/* Added responsive margins */}
 
-                                {/* Display audio if available */}
-                                {section.audio && (
-                                    <div className="mt-12 mx-4 md:mx-8"> {/* Added responsive margins */}
-                                        <audio controls className="w-full">
-                                            <source src={section.audio} type="audio/mp3" />
-                                            Your browser does not support the audio element.
-                                        </audio>
-                                    </div>
-                                )}
-                            </div>
-                        ))
-                    ) : (
-                        <p>No Section found</p>
-                    )}
+                                    {/* Display video if available */}
+                                    {section.video && (
+                                        <div className="mt-12 flex justify-center mx-4 md:mx-8">
+                                            <video controls autoPlay crossOrigin="anonymous" muted className="max-w-[90%] h-auto">
+                                                <source src={section.video} type="video/mp4" />
+                                            </video>
+                                        </div>
+                                    )}
+
+                                    {/* Display image if available */}
+                                    {section.image && (
+                                        <div className="mt-12 flex justify-center mx-4 md:mx-8"> {/* Added responsive margins */}
+                                            <img src={section.image} alt="Section" className="max-w-[90%] h-auto rounded-sm" />
+                                        </div>
+                                    )}
+
+                                    {/* Display audio if available */}
+                                    {section.audio && (
+                                        <div className="mt-12 mx-4 md:mx-8"> {/* Added responsive margins */}
+                                            <audio controls className="w-full">
+                                                <source src={section.audio} type="audio/mp3" />
+                                                Your browser does not support the audio element.
+                                            </audio>
+                                        </div>
+                                    )}
+                                </div>
+                            ))
+                        ) : (
+                            <p>No Section found</p>
+                        )}
+                    </div>
 
                     {
                         loading ? (
@@ -382,7 +485,7 @@ export default function Home() {
                                     <div>
                                         {latestUpdatedAt && (
                                             <div className="absolute bottom-4 right-4 text-sm text-gray-500 font-medium">
-                                                Last Updated: {new Date(latestUpdatedAt).toLocaleString()}
+                                                Last Updated: {new Date(latestUpdatedAt).toLocaleDateString()}
                                             </div>
                                         )}
                                     </div>
@@ -390,6 +493,7 @@ export default function Home() {
                             })()
                         )
                     }
+
 
 
                 </motion.div>

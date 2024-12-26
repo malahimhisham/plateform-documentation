@@ -1,0 +1,59 @@
+
+    const handlePrint = () => {
+        if (!filteredSections || filteredSections.length === 0) {
+            toast.error("Data is still loading, please wait.");
+            return;
+        }
+
+        // Capture the video screenshot before printing
+        const videoElement = document.querySelector('video');
+        console.log("videoElement", videoElement)
+        const screenshotDataUrl = captureVideoScreenshot(videoElement);
+        console.log("screenshotDataUrl", screenshotDataUrl)
+
+        // Create a temporary element to print the specific content (including the screenshot)
+        const contentToPrint = document.getElementById('content-to-print').innerHTML;
+        const newWindow = window.open('', '_blank');
+        newWindow.document.write('<html><head><title>Print</title><style>body { font-family: Arial, sans-serif; } video { max-width: 100%; } </style></head><body>');
+
+        // Insert the video screenshot in place of the video
+        newWindow.document.write(contentToPrint.replace('<video', `<img src="${screenshotDataUrl}" alt="Video Screenshot"`));
+
+        newWindow.document.write('</body></html>');
+        newWindow.document.close();
+
+        // Ensure video content is loaded before printing
+        setTimeout(() => {
+            newWindow.print();
+        }, 500);  // Delay to ensure everything is loaded
+    };
+
+
+ const captureVideoScreenshot = (videoElement) => {
+        if (!videoElement) {
+            console.error('No video element found.');
+            return null;
+        }
+
+        // Ensure the video is ready to be drawn onto a canvas
+        if (videoElement.readyState >= 3) { // `HAVE_FUTURE_DATA` state (video is ready to be drawn)
+            // Set cross-origin policy
+            videoElement.crossOrigin = 'anonymous';  // Enables cross-origin access
+
+            const canvas = document.createElement('canvas');
+            canvas.width = videoElement.videoWidth;
+            canvas.height = videoElement.videoHeight;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(videoElement, 0, 0, canvas.width, canvas.height);
+
+            try {
+                return canvas.toDataURL(); // returns base64 image URL
+            } catch (e) {
+                console.error('Error capturing screenshot:', e);
+                return null;
+            }
+        } else {
+            console.error('Video is not ready to be drawn.');
+            return null;
+        }
+    };
