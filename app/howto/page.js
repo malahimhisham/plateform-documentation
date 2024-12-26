@@ -275,10 +275,10 @@ export default function Home() {
         });
 
         // If no screenshots were captured, return early
-        if (screenshots.length === 0) {
-            toast.error("Failed to capture video screenshots.");
-            return;
-        }
+        // if (screenshots.length === 0) {
+        //     toast.error("Failed to capture video screenshots.");
+        //     return;
+        // }
 
         // Create a temporary element to print the specific content (including the screenshots)
         const contentToPrint = document.getElementById('content-to-print').innerHTML;
@@ -287,9 +287,11 @@ export default function Home() {
 
         // Replace video tags with the corresponding screenshot for each video
         let updatedContent = contentToPrint;
-        screenshots.forEach((screenshotDataUrl) => {
-            updatedContent = updatedContent.replace('<video>', `<img src="${screenshotDataUrl}" alt="Video Screenshot" />`);
-        });
+        if(screenshots.length > 0){
+            screenshots.forEach((screenshotDataUrl) => {
+                updatedContent = updatedContent.replace('<video>', `<img src="${screenshotDataUrl}" alt="Video Screenshot" />`);
+            });
+        }
 
         newWindow.document.write(updatedContent);
 
