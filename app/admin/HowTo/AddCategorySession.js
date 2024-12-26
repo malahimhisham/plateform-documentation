@@ -211,6 +211,13 @@ const AddCategorySession = ({ setIsSession, category }) => {
                 )}
 
                 <div className="flex justify-end">
+                   
+                    <button
+                        onClick={() => setIsSession(false)}
+                        className="ml-2 border rounded px-4 py-2 hover:bg-gray-200 transition"
+                    >
+                        Cancel
+                    </button>
                     <button
                         onClick={handleCreateSession}
                         className="bg-primary text-white rounded px-4 py-2 hover:bg-[#2c234d] transition disabled:opacity-50"
@@ -223,12 +230,6 @@ const AddCategorySession = ({ setIsSession, category }) => {
                         ) : (
                             "Create"
                         )}
-                    </button>
-                    <button
-                        onClick={() => setIsSession(false)}
-                        className="ml-2 border rounded px-4 py-2 hover:bg-gray-200 transition"
-                    >
-                        Cancel
                     </button>
                 </div>
             </div>

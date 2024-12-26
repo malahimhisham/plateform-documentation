@@ -3,7 +3,7 @@ import toast from "react-hot-toast";
 
 const AddCategoryPopup = ({ setIsAddCategory }) => {
   const [name, setName] = useState("");
-  const [hasSubCategory, setHasSubCategory] = useState(true);
+  // const [hasSubCategory, setHasSubCategory] = useState(true);
   const [isLoading, setIsLoading] = useState(false); // Loading state
 
   const handleSubmit = async () => {
@@ -30,7 +30,7 @@ const AddCategoryPopup = ({ setIsAddCategory }) => {
             Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ name, hasSubCategory }),
+        body: JSON.stringify({ name}),
       });
 
       const data = await response.json();
@@ -66,7 +66,7 @@ const AddCategoryPopup = ({ setIsAddCategory }) => {
           />
         </div>
 
-        <div className="mb-4">
+        {/* <div className="mb-4">
           <label className="block text-sm font-semibold mb-1">Has Subcategory</label>
           <input
             type="checkbox"
@@ -74,9 +74,17 @@ const AddCategoryPopup = ({ setIsAddCategory }) => {
             onChange={() => setHasSubCategory(!hasSubCategory)}
             className="w-4 h-4 accent-primary"
           />
-        </div>
+        </div> */}
 
         <div className="flex justify-end space-x-2 mt-4">
+         
+          <button
+            onClick={() => setIsAddCategory(false)}
+            className="border rounded px-4 py-2 hover:bg-gray-200 transition"
+            disabled={isLoading}
+          >
+            Cancel
+          </button>
           <button
             onClick={handleSubmit}
             className="bg-primary text-white rounded px-4 py-2 hover:bg-[#2c234d] transition disabled:opacity-50"
@@ -87,13 +95,6 @@ const AddCategoryPopup = ({ setIsAddCategory }) => {
             ) : (
               "Add Category"
             )}
-          </button>
-          <button
-            onClick={() => setIsAddCategory(false)}
-            className="border rounded px-4 py-2 hover:bg-gray-200 transition"
-            disabled={isLoading}
-          >
-            Cancel
           </button>
         </div>
       </div>

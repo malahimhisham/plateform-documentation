@@ -69,10 +69,17 @@ const UpdateCategoryPopup = ({ setUpdateCategory, categoryToUpdate, setCategoryT
                 </div>
 
                 <div className="flex justify-end">
+                    
+                    <button
+                        onClick={() => setUpdateCategory(false)}
+                        className="mr-2 border rounded px-4 py-2 hover:bg-gray-200 transition"
+                    >
+                        Cancel
+                    </button>
                     <button
                         onClick={handleUpdateCategory}
                         className={`${
-                            isLoading ? "bg-gray-400 cursor-not-allowed" : "bg-primary"
+                            isLoading ? "bg-gray-400  cursor-not-allowed" : "bg-primary"
                         } text-white rounded px-4 py-2 hover:bg-[#2c234d] transition`}
                         disabled={isLoading} // Disable button while loading
                     >
@@ -81,12 +88,6 @@ const UpdateCategoryPopup = ({ setUpdateCategory, categoryToUpdate, setCategoryT
                         ) : (
                             "Update"
                         )}
-                    </button>
-                    <button
-                        onClick={() => setUpdateCategory(false)}
-                        className="ml-2 border rounded px-4 py-2 hover:bg-gray-200 transition"
-                    >
-                        Cancel
                     </button>
                 </div>
             </div>

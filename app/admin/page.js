@@ -6,6 +6,7 @@ import Link from 'next/link';
 import Howto from './HowTo/Howto';
 import Knowledge from './Knowledge/Knowledge';
 import ProductUpdates from './ProductUpdates/ProductUpdates';
+import toast from 'react-hot-toast';
 
 const Page = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -27,6 +28,16 @@ const Page = () => {
     setIsOpen(false);
   };
 
+  const logout = () => {
+    // localStorage.removeItem("authToken")
+    // localStorage.removeItem('userName')
+    // Delete cookies by setting their expiration date to the past
+    document.cookie = "authToken=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC;";
+    document.cookie = "userName=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC;";
+
+    toast.success("Logout User Successfully")
+    router.push('/')
+  }
 
   return (
     <>
@@ -72,11 +83,14 @@ const Page = () => {
         {/* Main content */}
         <div className="flex-1 p-4 ml-0 md:ml-64">
           <div>
-            <Link href={'/'}>
-              <button className="absolute top-4 right-2 bg-primary text-white px-4 py-2 rounded-lg shadow-md">
+            <Link href={'/howto'}>
+              <button className="absolute top-4 right-24 bg-primary text-white px-4 py-2 rounded-lg shadow-md">
                 Go to Platform Documentation
               </button>
             </Link>
+              <button onClick={()=> logout()} className="absolute top-4 right-2 bg-primary text-white px-4 py-2 rounded-lg shadow-md">
+                Logout
+              </button>
           </div>
 
           <div className="mt-4">

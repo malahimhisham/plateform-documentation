@@ -70,6 +70,13 @@ const UpdateSubCategoryPopup = ({subCategory, setUpdateSubCategory}) => {
                 </div>
 
                 <div className="flex justify-end">
+                   
+                    <button
+                        onClick={() => setUpdateSubCategory(false)}
+                        className="mr-2 border rounded px-4 py-2 hover:bg-gray-200 transition"
+                    >
+                        Cancel
+                    </button>
                     <button
                         onClick={handleUpdateSubCategory}
                         className={`${
@@ -82,12 +89,6 @@ const UpdateSubCategoryPopup = ({subCategory, setUpdateSubCategory}) => {
                         ) : (
                             "Update"
                         )}
-                    </button>
-                    <button
-                        onClick={() => setUpdateSubCategory(false)}
-                        className="ml-2 border rounded px-4 py-2 hover:bg-gray-200 transition"
-                    >
-                        Cancel
                     </button>
                 </div>
             </div>

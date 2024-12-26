@@ -1,29 +1,18 @@
-"use client";
-
-import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
-import toast from "react-hot-toast";
-import { motion } from "framer-motion";
-import './admin/HowTo/table.modules.css'
+"use client"
+import { useRouter } from 'next/navigation';
+import React, { useEffect, useState } from 'react';
+import toast from 'react-hot-toast';
+import { FaArrowRightLong } from "react-icons/fa6";
 
 export default function Home() {
-  const [token, setToken] = useState("");
-  const [userName, setUserName] = useState(null);
-  const [categories, setCategories] = useState([]);
-  const [filteredCategories, setFilteredCategories] = useState([]);
-  const [selectedCategory, setSelectedCategory] = useState(null);
-  const [selectedSubCategory, setSelectedSubCategory] = useState(null);
-  const [subCategories, setSubCategories] = useState([]);
-  const [filteredSubCategories, setFilteredSubCategories] = useState([]);
+  const [otp, setOtp] = useState(['', '', '', '', '', '']);
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [isLoginSuccessful, setIsLoginSuccessful] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [searchQuery, setSearchQuery] = useState("");
-  const [subSearchQuery, setSubSearchQuery] = useState("");
+  const [error, setError] = useState('');
 
-  const [sortOption, setSortOption] = useState("default"); // Default sorting
-  const [filteredSections, setFilteredSections] = useState([]);
-
-  const [section, setSection] = useState([])
-  const router = useRouter();
+  const router = useRouter()
 
   useEffect(() => {
     function getCookie(name) {
@@ -37,343 +26,238 @@ export default function Home() {
     const userName = getCookie("userName");
 
     if (authToken && userName) {
-      setToken(authToken);
-      setUserName(userName);
-    } else {
-      toast.error("Please login first");
+      router.push('/howto')
     }
-  }, [router]);
+  }, [])
 
-  useEffect(() => {
-    const fetchCategories = async () => {
-      if (!token) return;
-      setLoading(true);
-      try {
-        const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND}/pcategory1/all`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-        const data = await response.json();
-        if (data.success) {
-          setCategories(data.categories);
-          setFilteredCategories(data.categories);
-          setSelectedCategory(data.categories[0]);
+  // Handle OTP input change
+  const handleOtpChange = (e, index) => {
+    const value = e.target.value;
 
-        } else {
-          setCategories([]);
-          setFilteredCategories([]);
-          setSection([])
-          setFilteredSections([])
-        }
-      } catch (error) {
-        console.log("Network error:", error);
-      } finally {
-        setLoading(false);
+    // If the input is a number and not empty
+    if (/^[0-9]$/.test(value) || value === '') {
+      const newOtp = [...otp];
+      newOtp[index] = value;
+      setOtp(newOtp);
+
+      // Automatically move to the next input field
+      if (value && index < 5) {
+        document.getElementById(`otp-${index + 1}`).focus();
       }
-    };
-
-    fetchCategories();
-  }, [token]);
-
-  useEffect(() => {
-    if (selectedCategory && selectedCategory.hasSubCategory) {
-      fetchSubCategories();
-
-    } else if (selectedCategory && (selectedCategory.hasSubCategory == false)) {
-      fetchSessions(selectedCategory._id)
-    }
-  }, [selectedCategory]);
-  useEffect(() => {
-    if (selectedSubCategory) {
-      fetchSubSessions(selectedSubCategory._id);
-    }
-  }, [selectedSubCategory]);
-
-  const fetchSubSessions = async (id) => {
-    function getCookie(name) {
-      const value = `; ${document.cookie}`;
-      const parts = value.split(`; ${name}=`);
-      if (parts.length === 2) return parts.pop().split(';').shift();
-      return null;
-    }
-
-    const token = getCookie('authToken');
-    setLoading(true)
-    try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND}/psubcategorysession1/search/${id}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      const data = await response.json();
-      if (data.success) {
-
-        setSection(data.sessions);
-        setFilteredSections(data.sections);
-        console.log("data.subsessions", data.sessions)
-      } else {
-        setSection([])
-        setFilteredSections([])
-      }
-    } catch (error) {
-      console.log("Network error:", error);
-    } finally {
-      setLoading(false)
     }
   };
 
-  const fetchSessions = async (id) => {
-    function getCookie(name) {
-      const value = `; ${document.cookie}`;
-      const parts = value.split(`; ${name}=`);
-      if (parts.length === 2) return parts.pop().split(';').shift();
-      return null;
-    }
-
-    const token = getCookie('authToken');
-    setLoading(true)
-    try {
-      // console.log("selectedCourse._id", category._id)
-      const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND}/pcategorysession1/search/${id}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      const data = await response.json();
-      if (data.success) {
-        setSection(data.sessions);
-        console.log("data.sessions", data.sessions)
-        setFilteredSections(data.sections);
-      } else {
-        setSection([])
-        setFilteredSections([]);
-      }
-    } catch (error) {
-      console.log("Network error:", error);
-    } finally {
-      setLoading(false)
+  // Handle pasting of OTP
+  const handleOtpPaste = (e) => {
+    const pastedValue = e.clipboardData.getData('Text');
+    if (/^\d{6}$/.test(pastedValue)) {
+      setOtp(pastedValue.split(''));
     }
   };
 
-  useEffect(() => {
-    const sortedSections = [...section];
-    if (sortOption === "sortA-Z") {
-      sortedSections.sort((a, b) => a.desc.localeCompare(b.desc)); // Sort A-Z by `desc`
-    } else if (sortOption === "sortLastUpdated") {
-      sortedSections.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)); // Sort by `lastUpdated`
-    } else if (sortOption === "sortByPopularity") {
-      sortedSections.sort((a, b) => b.popularity - a.popularity); // Sort by popularity (higher values first)
-    }
-    setFilteredSections(sortedSections);
-  }, [sortOption, section]);
+  // Handle email input change
+  const handleEmailChange = (event) => {
+    setEmail(event.target.value);
+  };
 
-  const fetchSubCategories = async () => {
+  // Handle password input change
+  const handlePasswordChange = (event) => {
+    setPassword(event.target.value);
+  };
+
+  // Handle OTP form submission
+  const handleOtpSubmit = async (e) => {
+    e.preventDefault();
     setLoading(true);
     try {
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_BACKEND}/psubcategory1/all?categoryAssign=${selectedCategory._id}`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND}/user/verify-otp`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, otp: otp.join('') }),
+      });
+
       const data = await response.json();
-      if (data.success) {
-        setSubCategories(data.pSubCategory1s);
-        setSelectedSubCategory(data.pSubCategory1s[0])
-        setFilteredSubCategories(data.pSubCategory1s);
+      if (response.ok) {
+        // localStorage.setItem("authToken", data.token);
+        // localStorage.setItem('userName', `${data.user.firstName} ${data.user.lastName}`)
+        document.cookie = `authToken=${data.token}; path=/;  secure; SameSite=None;}`;
+        document.cookie = `userName=${data.user.firstName} ${data.user.lastName}; path=/;  secure; SameSite=None;}`;
+
+        toast.success(data.message);
+        router.push('/howto')
+        setEmail("");
+        setOtp(['', '', '', '', '', '']);
+        setIsLoginSuccessful(false);
+        setLoading(false);
+        window.location.reload();
       } else {
-        setSubCategories([]);
-        setSection([])
-        setFilteredSections([])
+        toast.error(data.message);
+        setError(data.message || "OTP verification failed.");
       }
     } catch (error) {
-      console.log("Network error:", error);
+      toast.error("An error occurred while verifying OTP.");
+      setError("An error occurred while verifying OTP.");
+    }
+  };
+
+  // Handle login form submission
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    setLoading(true);
+    setError('');
+
+    try {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND}/user/login`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email, password }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || 'Something went wrong!');
+      }
+
+      toast.success('OTP sent to your email');
+      setPassword("");
+      setIsLoginSuccessful(true);
+      setLoading(false);
+    } catch (error) {
+      setError(error.message);
     } finally {
       setLoading(false);
     }
   };
 
-  const handleCategorySearch = (e) => {
-    setSearchQuery(e.target.value);
-    const filtered = categories.filter((category) =>
-      category.name.toLowerCase().includes(e.target.value.toLowerCase())
-    );
-    setFilteredCategories(filtered);
+  const handleKeyDown = (e) => {
+    if (e.key === 'Enter') {
+      handleOtpSubmit(e);
+    }
   };
 
-  const handleSubCategorySearch = (e) => {
-    setSubSearchQuery(e.target.value);
-    const filtered = subCategories.filter((subCategory) =>
-      subCategory.name.toLowerCase().includes(e.target.value.toLowerCase())
-    );
-    setFilteredSubCategories(filtered);
-  };
+  const slides = [
+    { image: '/login1.png', text: 'Collaborate with experts worldwide' },
+    { image: '/login2.png', text: 'Enhance your research capabilities' },
+    { image: '/login3.png', text: 'Discover new learning pathways' },
+  ];
+
+  const [currentSlide, setCurrentSlide] = useState(0);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentSlide((prev) => (prev + 1) % slides.length);
+    }, 3000);
+    return () => clearInterval(interval);
+  }, [slides.length]);
 
   return (
-    <>
-      {/* Header */}
-      <motion.div
-        className="flex justify-between w-full px-6 md:px-8 mt-6"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 0.5 }}
-      >
-        <h2 className="font-bold text-sm sm:text-base md:text-lg lg:text-2xl">
-          Platform Documentation
-        </h2>
-        <p className="text-xs sm:text-sm md:text-base text-gray-500 mt-2 md:mt-0">
-          Platform Documentation / {selectedCategory?.name || "Platform"} / {selectedSubCategory?.name || "no sub category selected"}
-        </p>
-      </motion.div>
-
-
-      {/* Main Content with animation */}
-      <motion.div
-        className="flex flex-col lg:flex-row flex-wrap-reverse lg:flex-nowrap min-h-[680px] px-4 lg:px-8"
-        initial={{ opacity: 0, x: -100 }}
-        animate={{ opacity: 1, x: 0 }}
-        transition={{ duration: 0.7 }}
-      >
-        {/* Right Sidebar */}
-        {selectedCategory && selectedCategory.hasSubCategory && <motion.div
-          className="lg:w-1/5 bg-white p-4 lg:ml-5 my-8 shadow-xl order-1 lg:order-3"
-          initial={{ opacity: 0, x: 100 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.5 }}
-        >
-          
-          <h2 className="font-bold mb-4">Subcategories</h2>
-          <input
-            type="text"
-            placeholder="Search subcategories..."
-            value={subSearchQuery}
-            onChange={handleSubCategorySearch}
-            className="w-full p-2 mb-4 border rounded-md focus:outline-none focus:ring focus:ring-primary"
+    <div className="flex flex-col lg:flex-row min-h-screen">
+      {/* Left side - slideshow */}
+      <div className="w-full lg:w-1/2 bg-purple-200 flex flex-col items-center justify-center relative p-6">
+        <h2 className="text-xl font-bold mb-4 text-gray-800">{slides[currentSlide].text}</h2>
+        <div className="relative w-full max-w-md h-80">
+          <img
+            src={slides[currentSlide].image}
+            alt={slides[currentSlide].text}
+            className="w-full h-full object-contain rounded-lg shadow-md"
           />
-          {loading ? (
-            <p>Loading...</p>
-          ) : filteredSubCategories.length > 0 ? (
-            <ul>
-              {filteredSubCategories.map((subCategory) => (
-                <li key={subCategory._id}
-                  onClick={() => setSelectedSubCategory(subCategory)}
-                  className={`cursor-pointer hover:underline p-2 ${selectedSubCategory?._id === subCategory._id
-                    ? "font-bold text-primary"
-                    : "text-gray-700"
-                    }`}
-                >
-                  {subCategory.name}
-                </li>
-              ))}
-            </ul>
-          ) : (
-            <p>No subcategories found</p>
-          )}
-        </motion.div>}
+        </div>
+        <div className="flex space-x-2 mt-4">
+          {slides.map((_, index) => (
+            <div
+              key={index}
+              className={`h-2 w-8 rounded-full transition-all duration-300 ${index === currentSlide ? 'bg-[#6610f2]' : 'bg-gray-300'
+                }`}
+            ></div>
+          ))}
+        </div>
+      </div>
 
-        {/* Main Content */}
-        <motion.div
-          className="flex-1 bg-white p-4 lg:p-14 my-8 shadow-xl order-2 lg:order-2 relative" // Adjusted padding for responsiveness
-          initial={{ opacity: 0, y: 50 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-        >
-          {/* Dropdown Filter */}
-          <div className="absolute top-4 right-4 bg-white p-2 rounded-md shadow-md">
-            <select
-              className="w-full p-2 border rounded-md bg-primary text-white focus:outline-none focus:ring-2 focus:ring-primary"
-              value={sortOption}
-              onChange={(e) => setSortOption(e.target.value)}
-            >
-              <option value="default" className="bg-primary text-white">Default</option>
-              <option value="sortA-Z" className="bg-primary text-white">Sort A-Z</option>
-              <option value="sortLastUpdated" className="bg-primary text-white">Sort by Last Updated</option>
-              <option value="sortByPopularity">Sort by Popularity</option>
-            </select>
+      {/* Right side - login form */}
+      <div className="w-full lg:w-1/2 flex items-center justify-center bg-white p-4 lg:p-8">
+        <div className="w-full max-w-sm sm:max-w-md space-y-6">
+          <div className="flex justify-center mb-4">
+            <img src='/logo.png' className="w-1/3 md:w-1/2" alt="Logo" />
           </div>
-
-          {loading ? (
-            <p>Loading...</p>
-          ) : filteredSections && filteredSections.length > 0 ? (
-            filteredSections.map((section) => (
-              <div key={section._id} className="mb-4">
-                {/* Display section description */}
-                {section.desc && <p className="font-bold mt-14 prose text-lg lg:text-xl mx-4 md:mx-8" dangerouslySetInnerHTML={{ __html: section.desc }} />} {/* Added responsive margins */}
-
-                {/* Display video if available */}
-                {section.video && (
-                  <div className="mt-12 flex justify-center mx-4 md:mx-8"> {/* Added responsive margins */}
-                    <video controls className="max-w-[90%] h-auto">
-                      <source src={section.video} type="video/mp4" />
-                      Your browser does not support the video tag.
-                    </video>
-                  </div>
-                )}
-
-                {/* Display image if available */}
-                {section.image && (
-                  <div className="mt-12 flex justify-center mx-4 md:mx-8"> {/* Added responsive margins */}
-                    <img src={section.image} alt="Section" className="max-w-[90%] h-auto rounded-sm" />
-                  </div>
-                )}
-
-                {/* Display audio if available */}
-                {section.audio && (
-                  <div className="mt-12 mx-4 md:mx-8"> {/* Added responsive margins */}
-                    <audio controls className="w-full">
-                      <source src={section.audio} type="audio/mp3" />
-                      Your browser does not support the audio element.
-                    </audio>
-                  </div>
-                )}
+          {!isLoginSuccessful ? (
+            <form className="space-y-4" onSubmit={handleSubmit}>
+              <div>
+                <label htmlFor="email" className="block text-sm font-medium text-gray-700">
+                  Email
+                </label>
+                <input
+                  id="email"
+                  name="email"
+                  type="email"
+                  value={email}
+                  onChange={handleEmailChange}
+                  required
+                  className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-[#6610f2] focus:border-[#6610f2] sm:text-sm"
+                />
               </div>
-            ))
-          ) : (
-            <p>No Section found</p>
-          )}
-        </motion.div>
 
-        {/* Left Sidebar */}
-        <motion.div
-          className="lg:w-1/5 bg-white p-4 my-8 lg:mr-5 shadow-xl order-3 lg:order-1"
-          initial={{ opacity: 0, x: -100 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.5 }}
-        >
-          <h2 className="font-bold mb-4">Categories</h2>
-          <input
-            type="text"
-            placeholder="Search categories..."
-            value={searchQuery}
-            onChange={handleCategorySearch}
-            className="w-full p-2 mb-4 border rounded-md focus:outline-none focus:ring focus:ring-primary"
-          />
-          {loading ? (
-            <p>Loading...</p>
-          ) : filteredCategories.length > 0 ? (
-            <ul>
-              {filteredCategories.map((category) => (
-                <li
-                  key={category._id}
-                  onClick={() => setSelectedCategory(category)}
-                  className={`cursor-pointer p-2 ${selectedCategory?._id === category._id
-                    ? "font-bold text-primary"
-                    : "text-gray-700"
-                    }`}
-                >
-                  {category.name}
-                </li>
-              ))}
-            </ul>
-          ) : (
-            <p>No categories found</p>
-          )}
-        </motion.div>
-      </motion.div>
+              <div>
+                <label htmlFor="password" className="block text-sm font-medium text-gray-700">
+                  Password
+                </label>
+                <input
+                  id="password"
+                  name="password"
+                  type="password"
+                  value={password}
+                  onChange={handlePasswordChange}
+                  required
+                  className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-[#6610f2] focus:border-[#6610f2] sm:text-sm"
+                />
+              </div>
 
-    </>
+              {error && <div className="text-red-500 text-sm">{error}</div>}
+
+              <button
+                type="submit"
+                className="w-full bg-[#6610f2] text-white py-2 px-4 rounded-md flex items-center justify-center gap-2 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#6610f2]"
+                aria-label="Sign in"
+                disabled={loading}
+              >
+                {loading ? 'Signing in ...' : 'Sign in'} <FaArrowRightLong />
+              </button>
+            </form>
+          ) : (
+            <>
+              <label className="block text-sm font-bold text-gray-700">
+                Authentication Code
+              </label>
+              <div className="flex space-x-2">
+                {[...Array(6)].map((_, index) => (
+                  <input
+                    key={index}
+                    id={`otp-${index}`}
+                    type="text"
+                    maxLength="1"
+                    value={otp[index]}
+                    onChange={(e) => handleOtpChange(e, index)}
+                    placeholder="0"
+                    className="w-10 p-2 border text-center focus:outline-none focus:ring-[#6610f2] focus:border-[#6610f2]"
+                    onPaste={handleOtpPaste} // Allow pasting
+                    onKeyDown={handleKeyDown}
+                  />
+                ))}
+              </div>
+              <button
+                onKeyDown={handleKeyDown}
+                onClick={handleOtpSubmit}
+                className="w-full bg-[#6610f2] text-white py-2 px-4 rounded-md flex items-center justify-center gap-2 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#6610f2]"
+                disabled={loading}
+              >
+                Sign in
+              </button>
+            </>
+          )}
+        </div>
+      </div>
+    </div>
   );
 }

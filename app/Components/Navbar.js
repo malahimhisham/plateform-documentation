@@ -3,7 +3,7 @@ import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
-import {  FaBars, FaTimes } from 'react-icons/fa';
+import { FaBars, FaTimes } from 'react-icons/fa';
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -31,14 +31,7 @@ const Navbar = () => {
       setToken(authToken);
       setUserName(userName);
       console.log('Cookies are valid');
-    } else {
-      toast.error("Please login first");
-
-      // Redirect to the home page
-      // window.open("http://localhost:3000/", "_blank");
-      // console.log('Cookies have expired or not set');
     }
-
     fetchAdmin()
   }, []);
 
@@ -58,30 +51,42 @@ const Navbar = () => {
     const token = getCookie('authToken');
 
     try {
-        const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND}/user/checkAdmin`, {
-            headers: {
-                Authorization: `Bearer ${token}`,
-            },
-        });
+      const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND}/user/checkAdmin`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
-        const data = await response.json();
+      const data = await response.json();
 
-        if (data.success) {
-            setIsAdmin(data.isUserAdmin)
-        } else {
-            setIsAdmin(false)
-        }
-        setLoading(false);
+      if (data.success) {
+        setIsAdmin(data.isUserAdmin)
+      } else {
+        setIsAdmin(false)
+      }
+      setLoading(false);
     } catch (error) {
-        // localStorage.removeItem('authToken')
-        // localStorage.removeItem('userName')
-        console.log("not admin")
+      // localStorage.removeItem('authToken')
+      // localStorage.removeItem('userName')
+      console.log("not admin")
     }
-}
+  }
+
+  const logout = () => {
+    // localStorage.removeItem("authToken")
+    // localStorage.removeItem('userName')
+    // Delete cookies by setting their expiration date to the past
+    document.cookie = "authToken=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC;";
+    document.cookie = "userName=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC;";
+
+    toast.success("Logout User Successfully")
+    router.push('/')
+  }
+
 
   return (
     <>
-      {(!pathname.startsWith("/admin")) && (
+      {( pathname !== "/" && !pathname.startsWith("/admin")) && (
         <>
           <header className="bg-white px-4 md:px-8 py-4 flex flex-col sm:flex-row justify-between items-center">
             <Link href={'/'}>
@@ -99,6 +104,7 @@ const Navbar = () => {
               </div>
               <div className="text-sm text-primary text-center sm:text-left mt-1 w-full md:w-auto">
                 {userName !== '' && <span>You are logged in as <strong>{userName}</strong></span>}
+                <span onClick={logout} className="ml-2 cursor-pointer hover:underline">Logout</span>
                 {isAdmin && (
                   <Link href={'/admin'}>
                     <span className="ml-2 cursor-pointer hover:underline">Admin Panel</span>
@@ -116,8 +122,8 @@ const Navbar = () => {
 
             {/* Desktop Navigation */}
             <div className="hidden md:flex flex-wrap justify-center space-x-2 md:space-x-4">
-              <Link href={'/'}><div
-                className={`flex items-center ${pathname === '/' ? 'text-primary bg-white' : 'text-white '}  px-4 py-2 rounded transition-colors `}
+              <Link href={'/howto'}><div
+                className={`flex items-center ${pathname === '/howto' ? 'text-primary bg-white' : 'text-white '}  px-4 py-2 rounded transition-colors `}
               >
                 How to
               </div></Link>

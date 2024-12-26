@@ -111,10 +111,6 @@ const HowTo = () => {
       >
         <div onClick={() => { setCategory(category); setIsSubCategory(true) }}>
           <h3 className="text-lg font-bold text-primary">{category.name}</h3>
-          <p className="text-gray-700 mt-2">
-            <span className="font-bold">Has Subcategory:</span>{" "}
-            {category.hasSubCategory ? "Yes" : "No"}
-          </p>
         </div>
 
         <div className="absolute top-2 right-2 flex space-x-2">
@@ -159,15 +155,6 @@ const HowTo = () => {
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
-              <select
-                className="px-4 py-2 accent-primary rounded-md text-primary"
-                value={selectedSubCategory}
-                onChange={(e) => setSelectedSubCategory(e.target.value)}
-              >
-                <option value="">Select Has SubCategory</option>
-                <option value="true">Yes</option>
-                <option value="false">No</option>
-              </select>
               <button
                 className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition"
                 onClick={resetFilters}
@@ -221,8 +208,8 @@ const HowTo = () => {
         </div>
       ) : (
         <>
-          {(category && category.hasSubCategory === true) && <SubCategory setIsSubCategory={setIsSubCategory} category={category} />}
-          {(category && category.hasSubCategory === false) && <CategorySession setIsSubCategory={setIsSubCategory} category={category} />}
+          {(category ) && <SubCategory setIsSubCategory={setIsSubCategory} category={category} />}
+          {/* {(category ) && <CategorySession setIsSubCategory={setIsSubCategory} category={category} />} */}
         </>
       )}
     </>

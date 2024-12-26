@@ -192,6 +192,13 @@ const UpdateCategorySession = ({ setUpdateSessionPopup, sessionData }) => {
                 )}
 
                 <div className="flex justify-end">
+                   
+                    <button
+                        onClick={() => setUpdateSessionPopup(false)}
+                        className="mr-2 border rounded px-4 py-2 hover:bg-gray-200 transition"
+                    >
+                        Cancel
+                    </button>
                     <button
                         onClick={handleUpdateSession}
                         className="bg-primary text-white rounded px-4 py-2 hover:bg-[#2c234d] transition disabled:opacity-50"
@@ -204,12 +211,6 @@ const UpdateCategorySession = ({ setUpdateSessionPopup, sessionData }) => {
                         ) : (
                             "Update"
                         )}
-                    </button>
-                    <button
-                        onClick={() => setUpdateSessionPopup(false)}
-                        className="ml-2 border rounded px-4 py-2 hover:bg-gray-200 transition"
-                    >
-                        Cancel
                     </button>
                 </div>
             </div>

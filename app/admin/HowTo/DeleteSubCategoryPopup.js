@@ -52,6 +52,14 @@ const DeleteSubCategoryPopup = ({subCategoryToDelete, setIsSubCategoryModelOpen 
                     Are you sure you want to delete the sub category &quot;{subCategoryToDelete?.name || "Unknown"}&quot;?
                 </p>
                 <div className="flex justify-between mt-6">
+                    
+                    <button
+                        className="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400"
+                        onClick={() => setIsSubCategoryModelOpen(false)}
+                        disabled={isLoading} // Disable cancel button while loading
+                    >
+                        No
+                    </button>
                     <button
                         className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 flex items-center justify-center disabled:opacity-50"
                         onClick={handleDelete}
@@ -62,13 +70,6 @@ const DeleteSubCategoryPopup = ({subCategoryToDelete, setIsSubCategoryModelOpen 
                         ) : (
                             "Yes"
                         )}
-                    </button>
-                    <button
-                        className="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400"
-                        onClick={() => setIsSubCategoryModelOpen(false)}
-                        disabled={isLoading} // Disable cancel button while loading
-                    >
-                        No
                     </button>
                 </div>
             </div>

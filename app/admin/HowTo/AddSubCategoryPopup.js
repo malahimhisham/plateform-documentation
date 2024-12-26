@@ -73,6 +73,14 @@ const AddSubCategoryPopup = ({ setIsAddSubCategory, category }) => {
 
 
         <div className="flex justify-end space-x-2 mt-4">
+         
+          <button
+            onClick={() => setIsAddSubCategory(false)}
+            className="border rounded px-4 py-2 hover:bg-gray-200 transition"
+            disabled={isLoading}
+          >
+            Cancel
+          </button>
           <button
             onClick={handleSubmit}
             className="bg-primary text-white rounded px-4 py-2 hover:bg-[#2c234d] transition disabled:opacity-50"
@@ -83,13 +91,6 @@ const AddSubCategoryPopup = ({ setIsAddSubCategory, category }) => {
             ) : (
               "Add SubCategory"
             )}
-          </button>
-          <button
-            onClick={() => setIsAddSubCategory(false)}
-            className="border rounded px-4 py-2 hover:bg-gray-200 transition"
-            disabled={isLoading}
-          >
-            Cancel
           </button>
         </div>
       </div>

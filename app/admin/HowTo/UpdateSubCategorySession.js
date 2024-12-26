@@ -9,7 +9,7 @@ const UpdateSubCategorySession = ({ setUpdateSessionPopup, sessionData }) => {
     const [imageFile, setImageFile] = useState(null);
     const [loading, setLoading] = useState(false);
     const [content, setContent] = useState(sessionData.desc || "");
-    const [popularity, setPopularity] = useState(subCategory?.popularity || 0);
+    const [popularity, setPopularity] = useState(sessionData?.popularity || 0);
 
     
 
@@ -194,6 +194,13 @@ const UpdateSubCategorySession = ({ setUpdateSessionPopup, sessionData }) => {
                 )}
 
                 <div className="flex justify-end">
+                    
+                    <button
+                        onClick={() => setUpdateSessionPopup(false)}
+                        className="mr-2 border rounded px-4 py-2 hover:bg-gray-200 transition"
+                    >
+                        Cancel
+                    </button>
                     <button
                         onClick={handleUpdateSession}
                         className="bg-primary text-white rounded px-4 py-2 hover:bg-[#2c234d] transition disabled:opacity-50"
@@ -206,12 +213,6 @@ const UpdateSubCategorySession = ({ setUpdateSessionPopup, sessionData }) => {
                         ) : (
                             "Update"
                         )}
-                    </button>
-                    <button
-                        onClick={() => setUpdateSessionPopup(false)}
-                        className="ml-2 border rounded px-4 py-2 hover:bg-gray-200 transition"
-                    >
-                        Cancel
                     </button>
                 </div>
             </div>
