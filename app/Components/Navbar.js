@@ -89,7 +89,7 @@ const Navbar = () => {
       {( pathname !== "/" && !pathname.startsWith("/admin")) && (
         <>
           <header className="bg-white px-4 md:px-8 py-4 flex flex-col sm:flex-row justify-between items-center">
-            <Link href={'/'}>
+            <Link href={'/howto'}>
               <div className="h-5 w-36 sm:w-48 md:w-56">
                 <img src="/logo.png" alt="Logo" className="w-full h-auto" />
               </div>

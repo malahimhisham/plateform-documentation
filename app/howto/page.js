@@ -22,6 +22,7 @@ export default function Home() {
 
     const [sortOption, setSortOption] = useState("default"); // Default sorting
     const [filteredSections, setFilteredSections] = useState([]);
+    const [feedBack ,setFeedBack] = useState(false)
 
     const [section, setSection] = useState([])
     const router = useRouter();
@@ -287,7 +288,7 @@ export default function Home() {
 
         // Replace video tags with the corresponding screenshot for each video
         let updatedContent = contentToPrint;
-        if(screenshots.length > 0){
+        if (screenshots.length > 0) {
             screenshots.forEach((screenshotDataUrl) => {
                 updatedContent = updatedContent.replace('<video>', `<img src="${screenshotDataUrl}" alt="Video Screenshot" />`);
             });
@@ -304,8 +305,177 @@ export default function Home() {
         }, 500);  // Delay to ensure everything is loaded
     };
 
+    const handleFeedBackHistroy = async () => {
+        function getCookie(name) {
+            const value = `; ${document.cookie}`;
+            const parts = value.split(`; ${name}=`);
+            if (parts.length === 2) return parts.pop().split(';').shift();
+            return null;
+        }
 
+        const token = getCookie('authToken');
+           if(selectedSubCategory == null && selectedCategory) {
+               try {
+                   const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND}/pfeedback1/feedback/category`, {
+                       method: "POST",
+                       headers: {
+                           Authorization: `Bearer ${token}`,
+                           "Content-Type": "application/json",
+                       },
+                       body: JSON.stringify({  CategoryAssign: selectedCategory._id  }),
+                   });
+   
+                   const data = await response.json();
+                   if (data.success) {
+                    //    toast.success(data.message);
+                    setFeedBack(false)
+                       console.log(data)
+                   } else {
+                    //    toast.error(data.message);
+                       setFeedBack(true)
+                   }
+               } catch (error) {
+                   toast.error(error.message);
+               }
 
+           }else if(selectedSubCategory){
+            try {
+                const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND}/pfeedback1/feedback/subcategory`, {
+                    method: "POST",
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({  SubCategoryAssign: selectedSubCategory._id }),
+                });
+
+                const data = await response.json();
+                if (data.success) {
+                    // toast.success(data.message);
+                    console.log(data)
+                    setFeedBack(false)
+                } else {
+                    // toast.error(data.message);
+                    setFeedBack(true)
+                }
+            } catch (error) {
+                toast.error(error.message);
+            }
+           }
+    }
+
+    useEffect(()=> {
+        handleFeedBackHistroy()
+    } , [selectedCategory, selectedSubCategory])
+
+    const handleFeedBack = async () => {
+        function getCookie(name) {
+            const value = `; ${document.cookie}`;
+            const parts = value.split(`; ${name}=`);
+            if (parts.length === 2) return parts.pop().split(';').shift();
+            return null;
+        }
+
+        const token = getCookie('authToken');
+
+        if (selectedSubCategory == null) {
+            try {
+                const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND}/pfeedback1/create`, {
+                    method: "POST",
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({ bad: false, good: true, CategoryAssign: selectedCategory._id }),
+                });
+
+                const data = await response.json();
+                if (data.success) {
+                    toast.success(data.message);
+                    handleFeedBackHistroy()
+                } else {
+                    toast.error(data.message);
+                }
+            } catch (error) {
+                toast.error("Error adding category");
+            }
+        } else if (selectedSubCategory) {
+            try {
+                const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND}/pfeedback1/create`, {
+                    method: "POST",
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({ bad: false, good: true, SubCategoryAssign: selectedSubCategory._id }),
+                });
+
+                const data = await response.json();
+                if (data.success) {
+                    toast.success(data.message);
+                } else {
+                    toast.error(data.message);
+                }
+            } catch (error) {
+                toast.error("Error adding category");
+            }
+        }
+
+    }
+    const handleFeedBack1 = async () => {
+        function getCookie(name) {
+            const value = `; ${document.cookie}`;
+            const parts = value.split(`; ${name}=`);
+            if (parts.length === 2) return parts.pop().split(';').shift();
+            return null;
+        }
+
+        const token = getCookie('authToken');
+
+        if (selectedSubCategory == null) {
+            try {
+                const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND}/pfeedback1/create`, {
+                    method: "POST",
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({ bad: false, good: true, CategoryAssign: selectedCategory._id }),
+                });
+
+                const data = await response.json();
+                if (data.success) {
+                    toast.success(data.message);
+                    handleFeedBackHistroy()
+                } else {
+                    toast.error(data.message);
+                }
+            } catch (error) {
+                toast.error("Error adding category");
+            }
+        } else if (selectedSubCategory) {
+            try {
+                const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND}/pfeedback1/create`, {
+                    method: "POST",
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({ bad: false, good: true, SubCategoryAssign: selectedSubCategory._id }),
+                });
+
+                const data = await response.json();
+                if (data.success) {
+                    toast.success(data.message);
+                } else {
+                    toast.error(data.message);
+                }
+            } catch (error) {
+                toast.error("Error adding category");
+            }
+        }
+
+    }
 
 
     return (
@@ -486,7 +656,7 @@ export default function Home() {
                                 return (
                                     <div>
                                         {latestUpdatedAt && (
-                                            <div className="absolute bottom-4 right-4 text-sm text-gray-500 font-medium">
+                                            <div className="absolute right-4 text-sm text-gray-500 font-medium">
                                                 Last Updated: {new Date(latestUpdatedAt).toLocaleDateString()}
                                             </div>
                                         )}
@@ -496,8 +666,35 @@ export default function Home() {
                         )
                     }
 
-
-
+                    {section && section.length > 0  && feedBack && <div className="   text-sm flex flex-col items-center justify-center space-y-2 mt-8 shadow-lg p-4 bg-white rounded-md">
+                        <p className="text-gray-600 font-medium">Did this answer your question?</p>
+                        <div className="flex space-x-4">
+                            {/* Yes Emoji */}
+                            <motion.div
+                                whileHover={{ y: -10 }} // Moves up on hover
+                                whileTap={{ scale: 1.1 }} // Slightly scales on tap
+                                transition={{ type: "spring", stiffness: 300 }}
+                                className="cursor-pointer"
+                                onClick={() => handleFeedBack()}
+                            >
+                                <span role="img" aria-label="Smiling Face with Thumbs Up" className="text-2xl">
+                                    😊
+                                </span>
+                            </motion.div>
+                            {/* No Emoji */}
+                            <motion.div
+                                whileHover={{ x: 10 }} // Moves right on hover
+                                whileTap={{ scale: 1.1 }} // Slightly scales on tap
+                                transition={{ type: "spring", stiffness: 300 }}
+                                className="cursor-pointer"
+                                onClick={() => handleFeedBack1()}
+                            >
+                                <span role="img" aria-label="Frowning Face with Thumbs Down" className="text-2xl">
+                                    😞
+                                </span>
+                            </motion.div>
+                        </div>
+                    </div>}
                 </motion.div>
 
                 {/* Left Sidebar */}
@@ -522,7 +719,7 @@ export default function Home() {
                             {filteredCategories.map((category) => (
                                 <li
                                     key={category._id}
-                                    onClick={() => {setSelectedCategory(category); setSelectedSubCategory(null)}}
+                                    onClick={() => { setSelectedCategory(category); setSelectedSubCategory(null) }}
                                     className={`cursor-pointer p-2 ${selectedCategory?._id === category._id
                                         ? "font-bold text-primary"
                                         : "text-gray-700"
