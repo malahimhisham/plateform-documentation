@@ -630,8 +630,38 @@ export default function Home() {
                         )}
                     </div>
 
-                    {
-                        loading ? (
+                    
+
+                    {section && section.length > 0  && feedBack && <div className="   text-sm flex flex-col items-center justify-center space-y-2 mt-8 shadow-lg p-4 bg-white rounded-md">
+                        <p className="text-gray-600 font-medium">Did this answer your question?</p>
+                        <div className="flex space-x-4">
+                            {/* Yes Emoji */}
+                            <motion.div
+                                whileHover={{ y: -10 }} // Moves up on hover
+                                whileTap={{ scale: 1.1 }} // Slightly scales on tap
+                                transition={{ type: "spring", stiffness: 300 }}
+                                className="cursor-pointer"
+                                onClick={() => handleFeedBack()}
+                            >
+                                <span role="img" aria-label="Smiling Face with Thumbs Up" className="text-2xl">
+                                    😊
+                                </span>
+                            </motion.div>
+                            {/* No Emoji */}
+                            <motion.div
+                                whileHover={{ x: 10 }} // Moves right on hover
+                                whileTap={{ scale: 1.1 }} // Slightly scales on tap
+                                transition={{ type: "spring", stiffness: 300 }}
+                                className="cursor-pointer"
+                                onClick={() => handleFeedBack1()}
+                            >
+                                <span role="img" aria-label="Frowning Face with Thumbs Down" className="text-2xl">
+                                    😞
+                                </span>
+                            </motion.div>
+                        </div>
+                    </div>}
+{  loading ? (
                             <p>Loading...</p>
                         ) : section && section.length > 0 && (
                             (() => {
@@ -663,36 +693,7 @@ export default function Home() {
                             })()
                         )
                     }
-
-                    {section && section.length > 0  && feedBack && <div className="   text-sm flex flex-col items-center justify-center space-y-2 mt-8 shadow-lg p-4 bg-white rounded-md">
-                        <p className="text-gray-600 font-medium">Did this answer your question?</p>
-                        <div className="flex space-x-4">
-                            {/* Yes Emoji */}
-                            <motion.div
-                                whileHover={{ y: -10 }} // Moves up on hover
-                                whileTap={{ scale: 1.1 }} // Slightly scales on tap
-                                transition={{ type: "spring", stiffness: 300 }}
-                                className="cursor-pointer"
-                                onClick={() => handleFeedBack()}
-                            >
-                                <span role="img" aria-label="Smiling Face with Thumbs Up" className="text-2xl">
-                                    😊
-                                </span>
-                            </motion.div>
-                            {/* No Emoji */}
-                            <motion.div
-                                whileHover={{ x: 10 }} // Moves right on hover
-                                whileTap={{ scale: 1.1 }} // Slightly scales on tap
-                                transition={{ type: "spring", stiffness: 300 }}
-                                className="cursor-pointer"
-                                onClick={() => handleFeedBack1()}
-                            >
-                                <span role="img" aria-label="Frowning Face with Thumbs Down" className="text-2xl">
-                                    😞
-                                </span>
-                            </motion.div>
-                        </div>
-                    </div>}
+                                    
                 </motion.div>
 
                 {/* Left Sidebar */}
