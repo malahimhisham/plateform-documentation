@@ -632,7 +632,7 @@ export default function Home() {
 
                     
 
-                    {section && section.length > 0  && feedBack && <div className="   text-sm flex flex-col items-center justify-center space-y-2 mt-8 shadow-lg p-4 bg-white rounded-md">
+                    {section && section.length > 0  && feedBack && <div className="  mb-5 text-sm flex flex-col items-center justify-center space-y-2 mt-8 shadow-lg p-4 bg-white rounded-md">
                         <p className="text-gray-600 font-medium">Did this answer your question?</p>
                         <div className="flex space-x-4">
                             {/* Yes Emoji */}
