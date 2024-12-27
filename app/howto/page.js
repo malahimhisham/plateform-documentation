@@ -684,7 +684,7 @@ export default function Home() {
                                 return (
                                     <div>
                                         {latestUpdatedAt && (
-                                            <div className="absolute right-4 text-sm text-gray-500 font-medium">
+                                            <div className="absolute p-4 right-4 text-sm text-gray-500 font-medium">
                                                 Last Updated: {new Date(latestUpdatedAt).toLocaleDateString()}
                                             </div>
                                         )}
