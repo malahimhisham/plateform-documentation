@@ -487,9 +487,7 @@ export default function Home() {
                 animate={{ opacity: 1 }}
                 transition={{ duration: 0.5 }}
             >
-                <h2 className="font-bold text-sm sm:text-base md:text-lg lg:text-2xl">
-                    Platform Documentation
-                </h2>
+                
                 <p className="text-xs sm:text-sm md:text-base text-gray-500 mt-2 md:mt-0">
                     <span >
                         Platform Documentation
