@@ -6,6 +6,7 @@ import toast from "react-hot-toast";
 import { motion } from "framer-motion";
 import { FaPrint } from 'react-icons/fa';
 import '../admin/HowTo/table.modules.css'
+import './a.modules.css'
 
 export default function Home() {
     const [token, setToken] = useState("");
@@ -22,7 +23,7 @@ export default function Home() {
 
     const [sortOption, setSortOption] = useState("default"); // Default sorting
     const [filteredSections, setFilteredSections] = useState([]);
-    const [feedBack ,setFeedBack] = useState(false)
+    const [feedBack, setFeedBack] = useState(false)
 
     const [section, setSection] = useState([])
     const router = useRouter();
@@ -43,11 +44,8 @@ export default function Home() {
         if (authToken && userName) {
             setToken(authToken);
             setUserName(userName);
-        } else {
-            toast.error("Please login first");
-            router.push('/')
-        }
-    }, [router]);
+        } 
+    }, []);
 
     useEffect(() => {
         const fetchCategories = async () => {
@@ -314,31 +312,31 @@ export default function Home() {
         }
 
         const token = getCookie('authToken');
-           if(selectedSubCategory == null && selectedCategory) {
-               try {
-                   const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND}/pfeedback1/feedback/category`, {
-                       method: "POST",
-                       headers: {
-                           Authorization: `Bearer ${token}`,
-                           "Content-Type": "application/json",
-                       },
-                       body: JSON.stringify({  CategoryAssign: selectedCategory._id  }),
-                   });
-   
-                   const data = await response.json();
-                   if (data.success) {
+        if (selectedSubCategory == null && selectedCategory) {
+            try {
+                const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND}/pfeedback1/feedback/category`, {
+                    method: "POST",
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({ CategoryAssign: selectedCategory._id }),
+                });
+
+                const data = await response.json();
+                if (data.success) {
                     //    toast.success(data.message);
                     setFeedBack(false)
-                       console.log(data)
-                   } else {
+                    console.log(data)
+                } else {
                     //    toast.error(data.message);
-                       setFeedBack(true)
-                   }
-               } catch (error) {
-                   toast.error(error.message);
-               }
+                    setFeedBack(true)
+                }
+            } catch (error) {
+                toast.error(error.message);
+            }
 
-           }else if(selectedSubCategory){
+        } else if (selectedSubCategory) {
             try {
                 const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND}/pfeedback1/feedback/subcategory`, {
                     method: "POST",
@@ -346,7 +344,7 @@ export default function Home() {
                         Authorization: `Bearer ${token}`,
                         "Content-Type": "application/json",
                     },
-                    body: JSON.stringify({  SubCategoryAssign: selectedSubCategory._id }),
+                    body: JSON.stringify({ SubCategoryAssign: selectedSubCategory._id }),
                 });
 
                 const data = await response.json();
@@ -361,12 +359,12 @@ export default function Home() {
             } catch (error) {
                 toast.error(error.message);
             }
-           }
+        }
     }
 
-    useEffect(()=> {
+    useEffect(() => {
         handleFeedBackHistroy()
-    } , [selectedCategory, selectedSubCategory])
+    }, [selectedCategory, selectedSubCategory])
 
     const handleFeedBack = async () => {
         function getCookie(name) {
@@ -392,6 +390,7 @@ export default function Home() {
                 const data = await response.json();
                 if (data.success) {
                     toast.success(data.message);
+                    setFeedBack(false)
                     handleFeedBackHistroy()
                 } else {
                     toast.error(data.message);
@@ -412,6 +411,8 @@ export default function Home() {
 
                 const data = await response.json();
                 if (data.success) {
+                    setFeedBack(false)
+                    handleFeedBackHistroy()
                     toast.success(data.message);
                 } else {
                     toast.error(data.message);
@@ -446,6 +447,7 @@ export default function Home() {
                 const data = await response.json();
                 if (data.success) {
                     toast.success(data.message);
+                    setFeedBack(false)
                     handleFeedBackHistroy()
                 } else {
                     toast.error(data.message);
@@ -467,6 +469,8 @@ export default function Home() {
                 const data = await response.json();
                 if (data.success) {
                     toast.success(data.message);
+                    setFeedBack(false)
+                    handleFeedBackHistroy()
                 } else {
                     toast.error(data.message);
                 }
@@ -487,7 +491,7 @@ export default function Home() {
                 animate={{ opacity: 1 }}
                 transition={{ duration: 0.5 }}
             >
-                
+
                 <p className="text-xs sm:text-sm md:text-base text-gray-500 mt-2 md:mt-0">
                     <span >
                         Platform Documentation
@@ -515,7 +519,7 @@ export default function Home() {
 
             {/* Main Content with animation */}
             <motion.div
-                className="flex flex-col lg:flex-row flex-wrap-reverse lg:flex-nowrap min-h-[680px] px-4 lg:px-8"
+                className="flex flex-col lg:flex-row flex-wrap-reverse lg:flex-nowrap min-h-[600px]  px-4 lg:px-8"
                 initial={{ opacity: 0, x: -100 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.7 }}
@@ -559,9 +563,9 @@ export default function Home() {
 
 
 
-                {/* Main Content */}
+                {/* Main Content  1*/}
                 <motion.div
-                    className="flex-1 bg-white p-4 lg:p-14 my-8 shadow-xl order-2 lg:order-2 relative" // Adjusted padding for responsiveness
+                    className="flex-1 scroll-visible bg-white p-4 lg:p-14 my-8 shadow-xl order-2  lg:order-2 relative" // Adjusted padding for responsiveness
                     initial={{ opacity: 0, y: 50 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.5 }}
@@ -630,70 +634,66 @@ export default function Home() {
                         )}
                     </div>
 
-                    
-
-                    {section && section.length > 0  && feedBack && <div className="  mb-5 text-sm flex flex-col items-center justify-center space-y-2 mt-8 shadow-lg p-4 bg-white rounded-md">
-                        <p className="text-gray-600 font-medium">Did this answer your question?</p>
-                        <div className="flex space-x-4">
-                            {/* Yes Emoji */}
-                            <motion.div
-                                whileHover={{ y: -10 }} // Moves up on hover
-                                whileTap={{ scale: 1.1 }} // Slightly scales on tap
-                                transition={{ type: "spring", stiffness: 300 }}
-                                className="cursor-pointer"
-                                onClick={() => handleFeedBack()}
-                            >
-                                <span role="img" aria-label="Smiling Face with Thumbs Up" className="text-2xl">
-                                    😊
-                                </span>
-                            </motion.div>
-                            {/* No Emoji */}
-                            <motion.div
-                                whileHover={{ x: 10 }} // Moves right on hover
-                                whileTap={{ scale: 1.1 }} // Slightly scales on tap
-                                transition={{ type: "spring", stiffness: 300 }}
-                                className="cursor-pointer"
-                                onClick={() => handleFeedBack1()}
-                            >
-                                <span role="img" aria-label="Frowning Face with Thumbs Down" className="text-2xl">
-                                    😞
-                                </span>
-                            </motion.div>
+                    {section && section.length > 0 && feedBack && (
+                        <div className="mb-5 text-sm flex flex-col items-center justify-center space-y-2 mt-8 shadow-lg p-4 bg-white rounded-md">
+                            <p className="text-gray-600 font-medium">Did this answer your question?</p>
+                            <div className="flex space-x-4">
+                                {/* Yes Emoji */}
+                                <motion.div
+                                    whileHover={{ y: -10 }} // Moves up on hover
+                                    whileTap={{ scale: 1.1 }} // Slightly scales on tap
+                                    transition={{ type: "spring", stiffness: 300 }}
+                                    className="cursor-pointer"
+                                    onClick={() => handleFeedBack()}
+                                >
+                                    <span role="img" aria-label="Smiling Face with Thumbs Up" className="text-2xl">
+                                        😊
+                                    </span>
+                                </motion.div>
+                                {/* No Emoji */}
+                                <motion.div
+                                    whileHover={{ x: 10 }} // Moves right on hover
+                                    whileTap={{ scale: 1.1 }} // Slightly scales on tap
+                                    transition={{ type: "spring", stiffness: 300 }}
+                                    className="cursor-pointer"
+                                    onClick={() => handleFeedBack1()}
+                                >
+                                    <span role="img" aria-label="Frowning Face with Thumbs Down" className="text-2xl">
+                                        😞
+                                    </span>
+                                </motion.div>
+                            </div>
                         </div>
-                    </div>}
-{  loading ? (
-                            <p>Loading...</p>
-                        ) : section && section.length > 0 && (
-                            (() => {
-                                console.log("clg", section);
+                    )}
 
-                                // Flatten the data arrays safely and handle empty data arrays
-                                const latestUpdatedAt = section
-                                    .flatMap((session) => session.data || [])  // Safely access session.data (fallback to empty array if undefined)
-                                    .reduce((latest, item) => {
-                                        // Only process items that have an updatedAt field
-                                        if (item.updatedAt) {
-                                            const itemUpdatedAt = new Date(item.updatedAt);
-                                            return itemUpdatedAt > new Date(latest) ? item.updatedAt : latest;
-                                        }
-                                        return latest;
-                                    }, section[0]?.updatedAt || '');  // Initialize with the first session's updatedAt if available
+                    {loading ? (
+                        <p>Loading...</p>
+                    ) : section && section.length > 0 && (
+                        <div className=" relative  mt-12">
+                            <div className="text-gray-500 text-sm font-medium">
+                                {/* Last Updated Section */}
+                                {(() => {
+                                    const latestUpdatedAt = section
+                                        .flatMap((session) => session.data || [])
+                                        .reduce((latest, item) => {
+                                            if (item.updatedAt) {
+                                                const itemUpdatedAt = new Date(item.updatedAt);
+                                                return itemUpdatedAt > new Date(latest) ? item.updatedAt : latest;
+                                            }
+                                            return latest;
+                                        }, section[0]?.updatedAt || '');
 
-                                console.log("latestUpdatedAt", latestUpdatedAt);
+                                    return latestUpdatedAt && (
+                                        <div className="text-sm absolute right-4  bottom-0   text-gray-500 ">
+                                            Last Updated: {new Date(latestUpdatedAt).toLocaleDateString()}
+                                        </div>
+                                    );
+                                })()}
+                            </div>
+                        </div>
+                    )}
 
-                                return (
-                                    <div>
-                                        {latestUpdatedAt && (
-                                            <div className="absolute p-4 right-4 text-sm text-gray-500 font-medium">
-                                                Last Updated: {new Date(latestUpdatedAt).toLocaleDateString()}
-                                            </div>
-                                        )}
-                                    </div>
-                                );
-                            })()
-                        )
-                    }
-                                    
+
                 </motion.div>
 
                 {/* Left Sidebar */}

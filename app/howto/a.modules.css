@@ -1,0 +1,14 @@
+.scroll-visible::-webkit-scrollbar {
+    display: block;
+    width: 8px;
+  }
+  
+  .scroll-visible::-webkit-scrollbar-thumb {
+    background-color: #6610f2;
+    border-radius: 4px;
+  }
+  
+  .scroll-visible {
+    scrollbar-width: thin; /* For Firefox */
+    scrollbar-color: #6610f2 transparent;
+  }

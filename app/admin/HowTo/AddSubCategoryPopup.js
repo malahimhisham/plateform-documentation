@@ -76,7 +76,7 @@ const AddSubCategoryPopup = ({ setIsAddSubCategory, category }) => {
          
           <button
             onClick={() => setIsAddSubCategory(false)}
-            className="border rounded px-4 py-2 hover:bg-gray-200 transition"
+            className="border rounded mr-2 px-4 py-2 hover:bg-gray-200 transition"
             disabled={isLoading}
           >
             Cancel

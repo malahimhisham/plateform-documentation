@@ -78,10 +78,16 @@ export default function Home() {
 
       const data = await response.json();
       if (response.ok) {
-        // localStorage.setItem("authToken", data.token);
-        // localStorage.setItem('userName', `${data.user.firstName} ${data.user.lastName}`)
-        document.cookie = `authToken=${data.token}; path=/;  secure; SameSite=None;}`;
-        document.cookie = `userName=${data.user.firstName} ${data.user.lastName}; path=/;  secure; SameSite=None;}`;
+        function getExpirationDate(days) {
+          const date = new Date();
+          date.setTime(date.getTime() + days * 24 * 60 * 60 * 1000); // Add specified days in milliseconds
+          return date.toUTCString();
+        }
+
+        // Set cookies with a 7-day expiration
+        const expirationDate = getExpirationDate(7);
+        document.cookie = `authToken=${data.token}; path=/; secure; SameSite=None; expires=${expirationDate}`;
+        document.cookie = `userName=${data.user.firstName} ${data.user.lastName}; path=/; secure; SameSite=None; expires=${expirationDate}`;
 
         toast.success(data.message);
         router.push('/howto')

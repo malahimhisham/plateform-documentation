@@ -214,7 +214,7 @@ const AddCategorySession = ({ setIsSession, category }) => {
                    
                     <button
                         onClick={() => setIsSession(false)}
-                        className="ml-2 border rounded px-4 py-2 hover:bg-gray-200 transition"
+                        className="mr-2 border rounded px-4 py-2 hover:bg-gray-200 transition"
                     >
                         Cancel
                     </button>

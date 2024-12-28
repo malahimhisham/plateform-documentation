@@ -1,18 +1,20 @@
 "use client"
-import React, {  useState} from 'react';
+import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { FaBars, FaTimes } from 'react-icons/fa'; 
+import { FaBars, FaTimes } from 'react-icons/fa';
 import Link from 'next/link';
 import Howto from './HowTo/Howto';
 import Knowledge from './Knowledge/Knowledge';
 import ProductUpdates from './ProductUpdates/ProductUpdates';
 import toast from 'react-hot-toast';
+import FeedBack from './HowTo/FeedBack';
 
 const Page = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isHowTo, setHowTo] = useState(true);
   const [isKnowledge, setKnowledge] = useState(false);
   const [isProductUpdates, setProductUpdates] = useState(false)
+  const [feedBack, setFeedBack] = useState(false)
 
   const toggleSidebar = () => {
     setIsOpen(!isOpen);
@@ -25,6 +27,8 @@ const Page = () => {
     setHowTo(selected === "howto");
     setKnowledge(selected === "knowledge");
     setProductUpdates(selected === 'productupdates')
+    setFeedBack(selected === 'feedback')
+
     setIsOpen(false);
   };
 
@@ -75,7 +79,13 @@ const Page = () => {
             >
               Product Updates
             </li>
-        
+            <li
+              className={`px-4 py-2 cursor-pointer transition duration-300 ease-in-out flex items-center rounded-md ${feedBack ? 'bg-[#2c234d] text-white font-semibold' : 'bg-transparent text-white'} hover:bg-[#2c234d] hover:text-white`}
+              onClick={() => handleSelection("feedback")}
+            >
+              Feed Backs
+            </li>
+
 
           </ul>
         </div>
@@ -83,20 +93,25 @@ const Page = () => {
         {/* Main content */}
         <div className="flex-1 p-4 ml-0 md:ml-64">
           <div>
+            <button
+              onClick={() => logout()}
+              className="absolute top-4 right-64 bg-primary text-white px-4 py-2 rounded-lg shadow-md z-50"
+            >
+              Logout
+            </button>
+
             <Link href={'/howto'}>
-              <button className="absolute top-4 right-24 bg-primary text-white px-4 py-2 rounded-lg shadow-md">
+              <button className="absolute top-4 right-1 bg-primary text-white px-4 py-2 rounded-lg shadow-md">
                 Go to Platform Documentation
               </button>
             </Link>
-              <button onClick={()=> logout()} className="absolute top-4 right-2 bg-primary text-white px-4 py-2 rounded-lg shadow-md">
-                Logout
-              </button>
           </div>
 
           <div className="mt-4">
             {isHowTo && <Howto />}
             {isKnowledge && <Knowledge />}
             {isProductUpdates && <ProductUpdates />}
+            {feedBack && <FeedBack />}
           </div>
         </div>
 
