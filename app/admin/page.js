@@ -8,6 +8,8 @@ import Knowledge from './Knowledge/Knowledge';
 import ProductUpdates from './ProductUpdates/ProductUpdates';
 import toast from 'react-hot-toast';
 import FeedBack from './HowTo/FeedBack';
+import FeedBack2 from './Knowledge/FeedBack';
+import FeedBack3 from './ProductUpdates/FeedBack';
 
 const Page = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -15,6 +17,8 @@ const Page = () => {
   const [isKnowledge, setKnowledge] = useState(false);
   const [isProductUpdates, setProductUpdates] = useState(false)
   const [feedBack, setFeedBack] = useState(false)
+  const [feedBack2, setFeedBack2] = useState(false)
+  const [feedBack3, setFeedBack3] = useState(false)
 
   const toggleSidebar = () => {
     setIsOpen(!isOpen);
@@ -28,6 +32,8 @@ const Page = () => {
     setKnowledge(selected === "knowledge");
     setProductUpdates(selected === 'productupdates')
     setFeedBack(selected === 'feedback')
+    setFeedBack2(selected === 'feedback2')
+    setFeedBack3(selected === 'feedback3')
 
     setIsOpen(false);
   };
@@ -64,26 +70,38 @@ const Page = () => {
               className={`px-4 py-2 cursor-pointer transition duration-300 ease-in-out flex items-center rounded-md ${isHowTo ? 'bg-[#2c234d] text-white font-semibold' : 'bg-transparent text-white'} hover:bg-[#2c234d] hover:text-white`}
               onClick={() => handleSelection("howto")}
             >
-              How To
+              General Guides
             </li>
 
             <li
               className={`px-4 py-2 cursor-pointer transition duration-300 ease-in-out flex items-center rounded-md ${isKnowledge ? 'bg-[#2c234d] text-white font-semibold' : 'bg-transparent text-white'} hover:bg-[#2c234d] hover:text-white`}
               onClick={() => handleSelection("knowledge")}
             >
-              Knowledge
+              Knowledge Base
             </li>
             <li
               className={`px-4 py-2 cursor-pointer transition duration-300 ease-in-out flex items-center rounded-md ${isProductUpdates ? 'bg-[#2c234d] text-white font-semibold' : 'bg-transparent text-white'} hover:bg-[#2c234d] hover:text-white`}
               onClick={() => handleSelection("productupdates")}
             >
-              Product Updates
+              Release Notes
             </li>
             <li
               className={`px-4 py-2 cursor-pointer transition duration-300 ease-in-out flex items-center rounded-md ${feedBack ? 'bg-[#2c234d] text-white font-semibold' : 'bg-transparent text-white'} hover:bg-[#2c234d] hover:text-white`}
               onClick={() => handleSelection("feedback")}
             >
-              Feed Backs
+             General Guides feedbacks
+            </li>
+            <li
+              className={`px-4 py-2 cursor-pointer transition duration-300 ease-in-out flex items-center rounded-md ${feedBack2 ? 'bg-[#2c234d] text-white font-semibold' : 'bg-transparent text-white'} hover:bg-[#2c234d] hover:text-white`}
+              onClick={() => handleSelection("feedback2")}
+            >
+             Knowledge Base feedbacks
+            </li>
+            <li
+              className={`px-4 py-2 cursor-pointer transition duration-300 ease-in-out flex items-center rounded-md ${feedBack3 ? 'bg-[#2c234d] text-white font-semibold' : 'bg-transparent text-white'} hover:bg-[#2c234d] hover:text-white`}
+              onClick={() => handleSelection("feedback3")}
+            >
+             Release Notes feedbacks
             </li>
 
 
@@ -100,7 +118,7 @@ const Page = () => {
               Logout
             </button>
 
-            <Link href={'/howto'}>
+            <Link href={'/GeneralGuides'}>
               <button className="absolute top-4 right-1 bg-primary text-white px-4 py-2 rounded-lg shadow-md">
                 Go to Platform Documentation
               </button>
@@ -112,6 +130,8 @@ const Page = () => {
             {isKnowledge && <Knowledge />}
             {isProductUpdates && <ProductUpdates />}
             {feedBack && <FeedBack />}
+            {feedBack2 && <FeedBack2 />}
+            {feedBack3 && <FeedBack3 />}
           </div>
         </div>
 

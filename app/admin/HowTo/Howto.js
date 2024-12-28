@@ -143,7 +143,7 @@ const HowTo = () => {
     <>
       {!isSubCategory ? (
         <div className="lg:mt-auto mt-12">
-          <h2 className="text-2xl font-bold mb-6 text-primary">How To</h2>
+          <h2 className="text-2xl font-bold mb-6 text-primary">General guides</h2>
 
           {/* Filter Section */}
           <div className="bg-primary p-4 rounded-md shadow-md mb-6">

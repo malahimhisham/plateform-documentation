@@ -1,7 +1,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
 
-const FeedBack = () => {
+const FeedBack2 = () => {
   const [categories, setCategories] = useState([]);
   const [subCategories, setSubCategories] = useState([]);
   const [loading, setLoading] = useState(false); // Loading state
@@ -18,7 +18,7 @@ const FeedBack = () => {
     const token = getCookie("authToken");
     setLoading(true); // Start loading spinner
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND}/pfeedback1/all`, {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND}/pfeedback2/all`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -106,7 +106,7 @@ const FeedBack = () => {
 
   return (
     <div className="lg:mt-auto mt-12">
-      <h2 className="text-2xl font-bold mb-6 text-primary">General guides feedbacks</h2>
+      <h2 className="text-2xl font-bold mb-6 text-primary"> Knowledge base feedbacks</h2>
 
       {/* Loading Spinner */}
       {loading ? (
@@ -140,4 +140,4 @@ const FeedBack = () => {
   );
 };
 
-export default FeedBack;
+export default FeedBack2;

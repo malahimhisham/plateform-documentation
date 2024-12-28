@@ -86,10 +86,10 @@ const Navbar = () => {
 
   return (
     <>
-      {( pathname !== "/" && !pathname.startsWith("/admin")) && (
+      {(pathname !== "/" && !pathname.startsWith("/admin")) && (
         <>
           <header className="bg-white px-4 md:px-8 py-4 flex flex-col sm:flex-row justify-between items-center">
-            <Link href={'/howto'}>
+            <Link href={'/GeneralGuides'}>
               <div className="h-5 w-36 sm:w-48 md:w-56">
                 <img src="/logo.png" alt="Logo" className="w-full h-auto" />
               </div>
@@ -122,20 +122,20 @@ const Navbar = () => {
 
             {/* Desktop Navigation */}
             <div className="hidden md:flex flex-wrap justify-center space-x-2 md:space-x-4">
-              <Link href={'/howto'}><div
-                className={`flex items-center ${pathname === '/howto' ? 'text-primary bg-white' : 'text-white '}  px-4 py-2 rounded transition-colors `}
+              <Link href={'/GeneralGuides'}><div
+                className={`flex items-center ${pathname === '/GeneralGuides' ? 'text-primary bg-white' : 'text-white '}  px-4 py-2 rounded transition-colors `}
               >
-                How to
+                General Guides
               </div></Link>
-              <Link href={'/howto'}><div
-                className={`flex items-center text-white px-4 py-2 rounded transition-colors `}
+              <Link href={'/Knowledgebase'}><div
+                className={`flex items-center ${pathname === '/Knowledgebase' ? 'text-primary bg-white' : 'text-white '}  px-4 py-2 rounded transition-colors `}
               >
-                Knowledge
+                Knowledge   Base
               </div></Link>
-              <Link href={'/howto'}><div
-                className={`flex items-center text-white px-4 py-2 rounded transition-colors `}
+              <Link href={'/ReleaseNotes'}><div
+                className={`flex items-center ${pathname === '/ReleaseNotes' ? 'text-primary bg-white' : 'text-white '}  px-4 py-2 rounded transition-colors `}
               >
-                Product Updates
+                Release Notes
               </div></Link>
 
             </div>
@@ -152,15 +152,15 @@ const Navbar = () => {
             <div className="space-y-4">
               <div className="flex items-center px-4 py-2 rounded transition-colors">
                 {/* <FaHome className="mr-2" /> */}
-                <Link href={'/home'}>How to</Link>
+                <Link href={'/GeneralGuides'}>General guides</Link>
               </div>
               <div className="flex items-center  px-4 py-2 rounded transition-colors">
                 {/* <FaHome className="mr-2" /> */}
-                <Link href={'/home'}>Knowledge</Link>
+                <Link href={'/Knowledgebase'}>Knowledge base</Link>
               </div>
               <div className="flex items-center  px-4 py-2 rounded transition-colors">
                 {/* <FaHome className="mr-2" /> */}
-                <Link href={'/home'}>Product Updates</Link>
+                <Link href={'/ReleaseNotes'}>Release Notes</Link>
               </div>
 
 

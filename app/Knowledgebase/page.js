@@ -44,7 +44,7 @@ export default function Home() {
         if (authToken && userName) {
             setToken(authToken);
             setUserName(userName);
-        } 
+        }
     }, []);
 
     useEffect(() => {
@@ -52,7 +52,7 @@ export default function Home() {
             if (!token) return;
             setLoading(true);
             try {
-                const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND}/pcategory1/all`, {
+                const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND}/pcategory2/all`, {
                     headers: {
                         Authorization: `Bearer ${token}`,
                     },
@@ -71,6 +71,10 @@ export default function Home() {
                     setFilteredSections([])
                 }
             } catch (error) {
+                setCategories([]);
+                setFilteredCategories([]);
+                setSection([])
+                setFilteredSections([])
                 console.log("Network error:", error);
             } finally {
                 setLoading(false);
@@ -104,7 +108,7 @@ export default function Home() {
         const token = getCookie('authToken');
         setLoading(true)
         try {
-            const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND}/psubcategorysession1/search/${id}`, {
+            const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND}/psubcategorysession2/search/${id}`, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
@@ -120,6 +124,8 @@ export default function Home() {
                 setFilteredSections([])
             }
         } catch (error) {
+            setSection([])
+            setFilteredSections([])
             console.log("Network error:", error);
         } finally {
             setLoading(false)
@@ -138,7 +144,7 @@ export default function Home() {
         setLoading(true)
         try {
             // console.log("selectedCourse._id", category._id)
-            const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND}/pcategorysession1/search/${id}`, {
+            const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND}/pcategorysession2/search/${id}`, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
@@ -153,6 +159,8 @@ export default function Home() {
                 setFilteredSections([]);
             }
         } catch (error) {
+            setSection([])
+            setFilteredSections([]);
             console.log("Network error:", error);
         } finally {
             setLoading(false)
@@ -177,7 +185,7 @@ export default function Home() {
         setLoading(true);
         try {
             const response = await fetch(
-                `${process.env.NEXT_PUBLIC_BACKEND}/psubcategory1/all?categoryAssign=${selectedCategory._id}`,
+                `${process.env.NEXT_PUBLIC_BACKEND}/psubcategory2/all?categoryAssign=${selectedCategory._id}`,
                 {
                     headers: {
                         Authorization: `Bearer ${token}`,
@@ -186,15 +194,18 @@ export default function Home() {
             );
             const data = await response.json();
             if (data.success) {
-                setSubCategories(data.pSubCategory1s);
-                // setSelectedSubCategory(data.pSubCategory1s[0])
-                setFilteredSubCategories(data.pSubCategory1s);
+                setSubCategories(data.pSubCategory2s);
+                
+                setFilteredSubCategories(data.pSubCategory2s);
             } else {
                 setSubCategories([]);
                 setSection([])
                 setFilteredSections([])
             }
         } catch (error) {
+            setSubCategories([]);
+            setSection([])
+            setFilteredSections([])
             console.log("Network error:", error);
         } finally {
             setLoading(false);
@@ -314,7 +325,7 @@ export default function Home() {
         const token = getCookie('authToken');
         if (selectedSubCategory == null && selectedCategory) {
             try {
-                const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND}/pfeedback1/feedback/category`, {
+                const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND}/pfeedback2/feedback/category`, {
                     method: "POST",
                     headers: {
                         Authorization: `Bearer ${token}`,
@@ -338,7 +349,7 @@ export default function Home() {
 
         } else if (selectedSubCategory) {
             try {
-                const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND}/pfeedback1/feedback/subcategory`, {
+                const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND}/pfeedback2/feedback/subcategory`, {
                     method: "POST",
                     headers: {
                         Authorization: `Bearer ${token}`,
@@ -378,7 +389,7 @@ export default function Home() {
 
         if (selectedSubCategory == null) {
             try {
-                const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND}/pfeedback1/create`, {
+                const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND}/pfeedback2/create`, {
                     method: "POST",
                     headers: {
                         Authorization: `Bearer ${token}`,
@@ -400,7 +411,7 @@ export default function Home() {
             }
         } else if (selectedSubCategory) {
             try {
-                const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND}/pfeedback1/create`, {
+                const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND}/pfeedback2/create`, {
                     method: "POST",
                     headers: {
                         Authorization: `Bearer ${token}`,
@@ -435,7 +446,7 @@ export default function Home() {
 
         if (selectedSubCategory == null) {
             try {
-                const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND}/pfeedback1/create`, {
+                const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND}/pfeedback2/create`, {
                     method: "POST",
                     headers: {
                         Authorization: `Bearer ${token}`,
@@ -457,7 +468,7 @@ export default function Home() {
             }
         } else if (selectedSubCategory) {
             try {
-                const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND}/pfeedback1/create`, {
+                const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND}/pfeedback2/create`, {
                     method: "POST",
                     headers: {
                         Authorization: `Bearer ${token}`,
@@ -600,7 +611,7 @@ export default function Home() {
                             filteredSections.map((section) => (
                                 <div key={section._id} className="mb-4">
                                     {/* Display section description */}
-                                    {section.desc && <p className="font-bold mt-14 prose text-lg lg:text-xl mx-4 md:mx-8" dangerouslySetInnerHTML={{ __html: section.desc }} />} {/* Added responsive margins */}
+                                    {section.desc && <p className=" mt-14 prose text-lg lg:text-xl mx-4 md:mx-8" dangerouslySetInnerHTML={{ __html: section.desc }} />} {/* Added responsive margins */}
 
                                     {/* Display video if available */}
                                     {section.video && (

@@ -26,7 +26,7 @@ export default function Home() {
     const userName = getCookie("userName");
 
     if (authToken && userName) {
-      router.push('/howto')
+      router.push('/GeneralGuides')
     }
   }, [])
 
@@ -90,7 +90,7 @@ export default function Home() {
         document.cookie = `userName=${data.user.firstName} ${data.user.lastName}; path=/; secure; SameSite=None; expires=${expirationDate}`;
 
         toast.success(data.message);
-        router.push('/howto')
+        router.push('/GeneralGuides')
         setEmail("");
         setOtp(['', '', '', '', '', '']);
         setIsLoginSuccessful(false);
