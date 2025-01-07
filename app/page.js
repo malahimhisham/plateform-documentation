@@ -86,8 +86,9 @@ export default function Home() {
 
         // Set cookies with a 7-day expiration
         const expirationDate = getExpirationDate(7);
-        document.cookie = `authToken=${data.token}; path=/; secure; SameSite=None; expires=${expirationDate}`;
-        document.cookie = `userName=${data.user.firstName} ${data.user.lastName}; path=/; secure; SameSite=None; expires=${expirationDate}`;
+        document.cookie = `authToken=${data.token}; domain=.terapage.ai; path=/; secure; SameSite=None; expires=${expirationDate}`;
+        document.cookie = `userName=${data.user.firstName} ${data.user.lastName}; domain=.terapage.ai; path=/; secure; SameSite=None; expires=${expirationDate}`;
+        
 
         toast.success(data.message);
         router.push('/GeneralGuides')
