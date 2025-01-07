@@ -97,7 +97,7 @@ const Navbar = () => {
 
             <div className="relative flex flex-col items-center sm:items-end  w-full md:w-auto mt-4 sm:mt-0">
               <div className=" underline hover:cursor-pointer text-primary">
-                <span onClick={() => { window.open("https://lms-frontend-coral.vercel.app/home", "_blank") }} className="w-full rounded-full  text-primary mb-2  text-center sm:text-left">
+                <span onClick={() => { window.open("https://training.terapage.ai/", "_blank") }} className="w-full rounded-full  text-primary mb-2  text-center sm:text-left">
                   Click to Visit Terapage Training Portal
                 </span>
 
