@@ -76,8 +76,9 @@ const Navbar = () => {
     // localStorage.removeItem("authToken")
     // localStorage.removeItem('userName')
     // Delete cookies by setting their expiration date to the past
-    document.cookie = "authToken=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC;";
-    document.cookie = "userName=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC;";
+    document.cookie = "authToken=; domain=.terapage.ai; path=/; secure; SameSite=None; expires=Thu, 01 Jan 1970 00:00:00 UTC;";
+    document.cookie = "userName=; domain=.terapage.ai; path=/; secure; SameSite=None; expires=Thu, 01 Jan 1970 00:00:00 UTC;";
+
 
     toast.success("Logout User Successfully")
     router.push('/')

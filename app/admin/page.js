@@ -42,8 +42,9 @@ const Page = () => {
     // localStorage.removeItem("authToken")
     // localStorage.removeItem('userName')
     // Delete cookies by setting their expiration date to the past
-    document.cookie = "authToken=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC;";
-    document.cookie = "userName=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC;";
+    document.cookie = "authToken=; domain=.terapage.ai; path=/; secure; SameSite=None; expires=Thu, 01 Jan 1970 00:00:00 UTC;";
+    document.cookie = "userName=; domain=.terapage.ai; path=/; secure; SameSite=None; expires=Thu, 01 Jan 1970 00:00:00 UTC;";
+
 
     toast.success("Logout User Successfully")
     router.push('/')
@@ -89,19 +90,19 @@ const Page = () => {
               className={`px-4 py-2 cursor-pointer transition duration-300 ease-in-out flex items-center rounded-md ${feedBack ? 'bg-[#2c234d] text-white font-semibold' : 'bg-transparent text-white'} hover:bg-[#2c234d] hover:text-white`}
               onClick={() => handleSelection("feedback")}
             >
-             General Guides feedbacks
+              General Guides feedbacks
             </li>
             <li
               className={`px-4 py-2 cursor-pointer transition duration-300 ease-in-out flex items-center rounded-md ${feedBack2 ? 'bg-[#2c234d] text-white font-semibold' : 'bg-transparent text-white'} hover:bg-[#2c234d] hover:text-white`}
               onClick={() => handleSelection("feedback2")}
             >
-             Knowledge Base feedbacks
+              Knowledge Base feedbacks
             </li>
             <li
               className={`px-4 py-2 cursor-pointer transition duration-300 ease-in-out flex items-center rounded-md ${feedBack3 ? 'bg-[#2c234d] text-white font-semibold' : 'bg-transparent text-white'} hover:bg-[#2c234d] hover:text-white`}
               onClick={() => handleSelection("feedback3")}
             >
-             Release Notes feedbacks
+              Release Notes feedbacks
             </li>
 
 
