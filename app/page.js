@@ -145,9 +145,9 @@ export default function Home() {
   };
 
   const slides = [
-    { image: '/login1.png', text: 'Collaborate with experts worldwide' },
-    { image: '/login2.png', text: 'Enhance your research capabilities' },
-    { image: '/login3.png', text: 'Discover new learning pathways' },
+    { image: '/login11.png', text: 'Collaborate with experts worldwide' },
+    { image: '/login22.png', text: 'Enhance your research capabilities' },
+    { image: '/login33.png', text: 'Discover new learning pathways' },
   ];
 
   const [currentSlide, setCurrentSlide] = useState(0);
